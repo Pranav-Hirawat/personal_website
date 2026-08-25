@@ -67,17 +67,22 @@
       rect.setAttribute('height', CELL);
       rect.setAttribute('rx', 2);
       rect.setAttribute('data-level', day.level);
+      rect.setAttribute('aria-hidden', 'true');
+      rect.dataset.label = day.count + (day.count === 1 ? ' contribution' : ' contributions') +
+                           ' on ' + d.toDateString();
 
-      var title = document.createElementNS(NS, 'title');
-      title.textContent = day.count + (day.count === 1 ? ' contribution' : ' contributions') +
-                          ' on ' + d.toDateString();
-      rect.appendChild(title);
+      /* Staggered by column, so the year sweeps in left to right. */
+      rect.style.transitionDelay = (col * 11) + 'ms';
 
       svg.appendChild(rect);
     });
 
-    document.getElementById('gh-total').textContent =
-      total.toLocaleString() + ' contributions in the last year';
+    var totalEl = document.getElementById('gh-total');
+    totalEl.innerHTML = '<span class="gh-count" data-to="' + total + '">0</span>' +
+                        ' contributions in the last year';
+
+    svg.setAttribute('aria-label',
+      total + ' contributions in the last year, shown as a calendar heat map');
   }
 
   /* ---- repositories ------------------------------------------------- */
@@ -89,9 +94,10 @@
       .filter(function (r) { return !r.fork && !r.archived; })
       .sort(function (a, b) { return new Date(b.pushed_at) - new Date(a.pushed_at); })
       .slice(0, 6)
-      .forEach(function (r) {
+      .forEach(function (r, i) {
         var li = document.createElement('li');
         li.className = 'gh-repo';
+        li.style.transitionDelay = (i * 70) + 'ms';
 
         var a = document.createElement('a');
         a.href = r.html_url;
@@ -129,6 +135,78 @@
       });
   }
 
+  /* ---- entrance + counter ------------------------------------------- */
+
+  function animate() {
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var svg = document.getElementById('gh-graph');
+    var counter = section.querySelector('.gh-count');
+
+    function count() {
+      var to = parseInt(counter.dataset.to, 10) || 0;
+      if (reduced) { counter.textContent = to.toLocaleString(); return; }
+
+      var start = null, DUR = 1100;
+      requestAnimationFrame(function step(t) {
+        if (start === null) start = t;
+        var p = Math.min((t - start) / DUR, 1);
+        var eased = 1 - Math.pow(1 - p, 3);          // ease-out cubic
+        counter.textContent = Math.round(to * eased).toLocaleString();
+        if (p < 1) requestAnimationFrame(step);
+      });
+    }
+
+    if (reduced || !('IntersectionObserver' in window)) {
+      svg.classList.add('gh-lit');
+      section.classList.add('gh-lit-repos');
+      count();
+      return;
+    }
+
+    var seen = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        svg.classList.add('gh-lit');
+        section.classList.add('gh-lit-repos');
+        count();
+        seen.disconnect();
+      });
+    }, { threshold: 0.15 });
+
+    seen.observe(section);
+  }
+
+  /* ---- themed tooltip ------------------------------------------------ */
+
+  function tooltip() {
+    var wrap = section.querySelector('.gh-graph-wrap');
+    var svg = document.getElementById('gh-graph');
+
+    var tip = document.createElement('div');
+    tip.className = 'gh-tip';
+    tip.setAttribute('aria-hidden', 'true');
+    wrap.appendChild(tip);
+
+    svg.addEventListener('pointermove', function (e) {
+      var cell = e.target.closest('rect');
+      if (!cell || !cell.dataset.label) { tip.classList.remove('is-on'); return; }
+
+      var box = wrap.getBoundingClientRect();
+      var c = cell.getBoundingClientRect();
+
+      tip.textContent = cell.dataset.label;
+      tip.classList.add('is-on');
+      /* Centre over the square, clamped so it can't hang off either edge. */
+      tip.style.left = Math.max(0, Math.min(
+        c.left - box.left + c.width / 2 - tip.offsetWidth / 2,
+        box.width - tip.offsetWidth
+      )) + 'px';
+      tip.style.top = (c.top - box.top - tip.offsetHeight - 8) + 'px';
+    }, { passive: true });
+
+    svg.addEventListener('pointerleave', function () { tip.classList.remove('is-on'); });
+  }
+
   /* ---- go ------------------------------------------------------------ */
 
   Promise.all([
@@ -148,6 +226,9 @@
     /* The section was hidden when motion.js set up its observers, so it never
        got measured. Tell it to look again now that the section has height. */
     window.dispatchEvent(new Event('resize'));
+
+    animate();
+    tooltip();
   }).catch(function (err) {
     /* Rate limited, offline, or the service is down. Leave the section out
        entirely — the contact list already links to the profile. */

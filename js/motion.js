@@ -6,6 +6,7 @@
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   var header   = document.getElementById('site-header');
+  var hero     = reduced ? null : document.querySelector('.hero');
   var progress = document.getElementById('progress');
   var navLinks = Array.prototype.slice.call(
     document.querySelectorAll('.site-header nav a[href^="#"]')
@@ -29,6 +30,15 @@
       if (progress) {
         var max = document.documentElement.scrollHeight - window.innerHeight;
         progress.style.setProperty('--p', max > 0 ? Math.min(y / max, 1) : 0);
+      }
+
+      if (hero) {
+        /* Hold steady while the hero is still comfortably on screen, then
+           recede. Fading from the first pixel of scroll just looks like the
+           page is dimming for no reason. */
+        var vh = window.innerHeight;
+        var out = (y - vh * 0.3) / (vh * 0.55);
+        hero.style.setProperty('--out', Math.max(0, Math.min(out, 1)).toFixed(3));
       }
 
       if (syncNav) syncNav();
@@ -104,6 +114,25 @@
           pending = false;
         });
       }, { passive: true });
+    });
+  }
+
+  /* ---- Magnetic buttons ---------------------------------------------- */
+
+  if (!reduced && finePointer) {
+    document.querySelectorAll('.btn').forEach(function (btn) {
+      var PULL = 0.28;   // fraction of the cursor's offset from centre
+
+      btn.addEventListener('pointermove', function (e) {
+        var b = btn.getBoundingClientRect();
+        btn.style.setProperty('--mx', ((e.clientX - (b.left + b.width / 2)) * PULL).toFixed(1) + 'px');
+        btn.style.setProperty('--my', ((e.clientY - (b.top + b.height / 2)) * PULL).toFixed(1) + 'px');
+      }, { passive: true });
+
+      btn.addEventListener('pointerleave', function () {
+        btn.style.setProperty('--mx', '0px');
+        btn.style.setProperty('--my', '0px');
+      });
     });
   }
 

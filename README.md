@@ -26,6 +26,12 @@ It also stands down entirely when the visitor has "reduce motion" turned on.
 | Circular theme wipe from the toggle | `::view-transition-new(root)` + `theme.js` |
 | Shine sweep across the solid button | `.btn:not(.ghost)::after` |
 | Reading progress bar | `.progress` + `motion.js` |
+| Heatmap squares sweep in by column | `.gh-graph.gh-lit rect` + `github.js` |
+| Contribution total counts up | `.gh-count` + `github.js` |
+| Repo cards stagger in | `.gh-lit-repos .gh-repo` |
+| Themed heatmap tooltip | `.gh-tip` + `github.js` |
+| Hero recedes as you scroll past | `--out` on `.hero` + `motion.js` |
+| Buttons pull toward the cursor | `--mx`/`--my` on `.btn` + `motion.js` |
 
 To tone it down, delete `js/motion.js` and the `.reveal` classes. To turn off
 one effect, remove its rule — none of them depend on each other.

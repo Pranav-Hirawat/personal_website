@@ -265,6 +265,10 @@ a { color: inherit; }
   max-width: var(--page);
   margin-inline: auto;
   padding: clamp(2.5rem, 9vh, 5rem) var(--gutter) clamp(3rem, 9vh, 5rem);
+  /* --out is driven by scroll in motion.js: 0 at rest, 1 once scrolled past. */
+  opacity: calc(1 - (var(--out, 0) * .65));
+  transform: translateY(calc(var(--out, 0) * -24px));
+  will-change: opacity, transform;
 }
 
 /* Soft accent bloom behind the headline.
@@ -360,8 +364,13 @@ a { color: inherit; }
   transition: transform .25s var(--ease), box-shadow .25s var(--ease),
               background .25s var(--ease), border-color .25s var(--ease), color .25s var(--ease);
 }
-.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
-.btn:active { transform: translateY(0); }
+/* --mx/--my are nudged toward the cursor by motion.js on fine pointers. */
+.btn { transform: translate(var(--mx, 0px), var(--my, 0px)); }
+.btn:hover {
+  transform: translate(var(--mx, 0px), calc(var(--my, 0px) - 2px));
+  box-shadow: var(--shadow);
+}
+.btn:active { transform: translate(var(--mx, 0px), var(--my, 0px)); }
 
 /* Light sweeps across the solid button on hover. */
 .btn:not(.ghost) { position: relative; overflow: hidden; }
@@ -590,6 +599,40 @@ a:hover .arw { transform: translate(2px, -2px); }
   font-size: 9px;
 }
 
+/* Squares sweep in column by column (delay set per-rect in github.js).
+   transform-box makes the SVG rect scale about its own centre. */
+.js-motion .gh-graph rect {
+  opacity: 0;
+  transform: scale(.35);
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: opacity .45s var(--ease), transform .45s var(--ease);
+}
+.js-motion .gh-graph.gh-lit rect { opacity: 1; transform: none; }
+
+.gh-count { font-variant-numeric: tabular-nums; color: var(--fg); font-weight: 600; }
+
+/* Tooltip. Positioned by github.js relative to .gh-graph-wrap. */
+.gh-graph-wrap { position: relative; }
+.gh-tip {
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+  white-space: nowrap;
+  padding: .3rem .55rem;
+  border-radius: 6px;
+  border: 1px solid var(--rule);
+  background: var(--bg-sunk);
+  box-shadow: var(--shadow);
+  font-family: var(--font-mono);
+  font-size: .6875rem;
+  color: var(--fg);
+  opacity: 0;
+  transform: translateY(3px);
+  transition: opacity .16s var(--ease), transform .16s var(--ease);
+}
+.gh-tip.is-on { opacity: 1; transform: none; }
+
 .gh-legend {
   display: flex;
   align-items: center;
@@ -631,6 +674,15 @@ a:hover .arw { transform: translate(2px, -2px); }
   transition: background .25s var(--ease), border-color .25s var(--ease);
 }
 .gh-repo:hover { background: var(--bg-sunk); border-color: var(--fg-faint); }
+
+/* Cards stagger in behind the graph (delay set per-card in github.js). */
+.js-motion .gh-repo {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity .55s var(--ease), transform .55s var(--ease),
+              background .25s var(--ease), border-color .25s var(--ease);
+}
+.js-motion .gh-lit-repos .gh-repo { opacity: 1; transform: none; }
 
 .gh-repo-name {
   font-family: var(--font-mono);
