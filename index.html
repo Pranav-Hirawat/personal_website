@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pranav Hirawat</title>
+<meta name="description" content="Personal site of Pranav Hirawat — selected work, writing, and contact.">
+
+<!-- Open Graph: what shows up when the link is shared -->
+<meta property="og:title" content="Pranav Hirawat">
+<meta property="og:description" content="Selected work, writing, and contact.">
+<meta property="og:type" content="website">
+<!-- TODO: set these once you have a domain and a 1200x630 preview image -->
+<!-- <meta property="og:url" content="https://example.com"> -->
+<!-- <meta property="og:image" content="https://example.com/assets/og.png"> -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="js/theme.js"></script>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- Fine film grain over the whole page. Purely decorative. -->
+<div class="grain" aria-hidden="true"></div>
+
+<header class="site-header" id="site-header">
+  <div class="header-inner">
+    <a class="wordmark" href="./">Pranav<span class="surname">&nbsp;Hirawat</span></a>
+    <nav aria-label="Primary">
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <button id="theme-toggle" type="button" aria-label="Switch color theme" title="Switch color theme">
+        <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18">
+          <path class="sun" d="M12 4V2m0 20v-2m8-8h2M2 12h2m13.66-5.66 1.41-1.41M4.93 19.07l1.41-1.41m11.32 0 1.41 1.41M4.93 4.93l1.41 1.41"/>
+          <circle class="sun" cx="12" cy="12" r="4"/>
+          <path class="moon" d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/>
+        </svg>
+      </button>
+    </nav>
+  </div>
+  <div class="progress" id="progress" aria-hidden="true"></div>
+</header>
+
+<main id="main">
+
+  <!-- ───────────────────────── Hero ───────────────────────── -->
+  <section class="hero">
+    <div class="hero-glow" aria-hidden="true"><i></i></div>
+
+    <!-- TODO: delete this pill if you're not looking for work. -->
+    <p class="status reveal" style="--d:0ms"><span class="dot" aria-hidden="true"></span> Available for new work</p>
+
+    <!-- Each line sits in an overflow-hidden mask so it can slide up into view. -->
+    <h1>
+      <span class="line"><span class="reveal as-line" style="--d:80ms">I build <em>things</em> that</span></span>
+      <span class="line"><span class="reveal as-line" style="--d:200ms">solve real problems.</span></span>
+    </h1>
+
+    <p class="lede reveal" style="--d:240ms">
+      <!-- TODO: one or two sentences. Who you are, what you do, what you're
+           looking for. Be specific — "I build data pipelines for fintech" beats
+           "passionate developer". -->
+      Short intro goes here. Say what you actually do and who it's for, then
+      point at the thing you most want people to click.
+    </p>
+
+    <p class="hero-actions reveal" style="--d:320ms">
+      <a class="btn" href="#work">See the work</a>
+      <a class="btn ghost" href="mailto:pranavhirawat618@gmail.com">Get in touch</a>
+    </p>
+  </section>
+
+  <!-- ───────────────────────── Work ───────────────────────── -->
+  <section id="work" class="section">
+    <h2 class="section-title reveal"><span class="num">01</span> Selected work</h2>
+
+    <ol class="projects">
+
+      <li class="project reveal">
+        <div class="project-index" aria-hidden="true">01</div>
+        <div class="project-body">
+          <h3 class="project-title">Intelligent API Security Gateway</h3>
+          <p class="project-meta">
+            <span class="tag">Python</span>
+            <span class="tag">Redis</span>
+            <span class="tag">Go</span>
+            <span class="tag">2026</span>
+          </p>
+          <p class="project-role">Four-person project — I built and own the Python control plane.</p>
+          <dl class="project-detail">
+            <dt>Problem</dt>
+            <dd>
+              A gateway can block a bad IP, but attackers rotate addresses. Judging each
+              request in isolation means the same actor is re-detected forever and never
+              actually stopped — six IPs grinding one login form read as six unrelated
+              incidents instead of one credential-stuffing campaign.
+            </dd>
+            <dt>Built</dt>
+            <dd>
+              The agentic half of the system: a control plane that wakes every 30 seconds to
+              correlate, decide and write policy, while a Go proxy does the enforcing.
+              Clustering over shared traits — endpoint, User-Agent, subnet, overlapping
+              timing — groups scattered evidence into campaigns that survive an attacker
+              changing every address. Severity and confidence then map onto an action ladder
+              (monitor → throttle → temp block → escalate), written to Redis with a TTL so
+              every decision expires on its own rather than needing to be revoked.
+            </dd>
+            <dt>Design</dt>
+            <dd>
+              The LLM narrates incidents but runs strictly after enforcement, so a
+              prompt-injected summary can mislead a reader and still never unblock an
+              attacker. It's optional too — a null provider means the system runs with no
+              model at all. The rails that matter (never action reserved ranges, never write
+              a policy without an expiry, cap IPs per cycle, honour dry-run) live together in
+              the one file that can influence the gateway.
+            </dd>
+            <dt>Outcome</dt>
+            <dd>
+              3,925 lines of source against 3,289 lines of tests: 249 tests at a 0.84:1
+              ratio, testing properties rather than paths — including that clean traffic
+              produces zero detections. One runtime dependency; the rest is standard library.
+              Kill the control plane and the gateway keeps serving traffic unchanged — it
+              just stops getting smarter.
+            </dd>
+          </dl>
+          <!-- TODO: the repo is currently private, so there's no Code link to give.
+               Add one here if it's ever made public:
+               <a href="...">Code <span class="arw" aria-hidden="true">↗</span></a> -->
+        </div>
+      </li>
+
+      <li class="project reveal">
+        <div class="project-index" aria-hidden="true">02</div>
+        <div class="project-body">
+          <h3 class="project-title">Fake Review Detector</h3>
+          <p class="project-meta">
+            <span class="tag">Python</span>
+            <span class="tag">NLP</span>
+            <span class="tag">scikit-learn</span>
+            <span class="tag">Streamlit</span>
+            <span class="tag">2026</span>
+          </p>
+          <dl class="project-detail">
+            <dt>Problem</dt>
+            <dd>
+              Computer-generated product reviews read as fluent and confident as real ones,
+              which is exactly what makes them hard to spot by eye and easy to buy in bulk.
+            </dd>
+            <dt>Built</dt>
+            <dd>
+              A text classifier over a cleaned, stopword-stripped, TF-IDF corpus, comparing
+              logistic regression against naive Bayes, then wrapped in a Streamlit app that
+              scores a pasted review in real time.
+            </dd>
+            <dt>Outcome</dt>
+            <dd>
+              ~89% accuracy, read through a confusion matrix and precision/recall/F1 rather
+              than accuracy alone — on a task where a false accusation costs more than a
+              miss.
+            </dd>
+          </dl>
+          <p class="project-links">
+            <a href="https://fake-review-detector-pranav.streamlit.app/">Live <span class="arw" aria-hidden="true">↗</span></a>
+            <a href="https://github.com/Pranav-Hirawat/Fake-review-detector">Code <span class="arw" aria-hidden="true">↗</span></a>
+          </p>
+        </div>
+      </li>
+
+      <li class="project reveal">
+        <div class="project-index" aria-hidden="true">03</div>
+        <div class="project-body">
+          <h3 class="project-title">Helivor</h3>
+          <p class="project-meta">
+            <span class="tag">Swift</span>
+            <span class="tag">SwiftUI</span>
+            <span class="tag">On-device AI</span>
+            <span class="tag">2025</span>
+          </p>
+          <dl class="project-detail">
+            <dt>Problem</dt>
+            <dd>
+              Disasters take out connectivity precisely when people most need guidance, so
+              anything that depends on a round trip to a server is useless at the moment it
+              matters.
+            </dd>
+            <dt>Built</dt>
+            <dd>
+              An iOS app that keeps its intelligence on the device — local weather conditions
+              and AI-assisted guidance for the area you're actually in, without waiting on a
+              network that may not be there.
+            </dd>
+            <dt>Outcome</dt>
+            <dd>
+              Shipped as a working SwiftUI app; the code is public.
+            </dd>
+          </dl>
+          <p class="project-links">
+            <a href="https://github.com/Pranav-Hirawat/disastermanagment">Code <span class="arw" aria-hidden="true">↗</span></a>
+          </p>
+        </div>
+      </li>
+
+      <!-- Copy a <li class="project reveal"> block to add another. Three to six
+           is the sweet spot — past that, cut the weakest ones. -->
+
+    </ol>
+  </section>
+
+  <!-- ───────────────────────── About ───────────────────────── -->
+  <section id="about" class="section">
+    <h2 class="section-title reveal"><span class="num">02</span> About</h2>
+    <div class="prose reveal">
+      <p>
+        <!-- TODO: 2–3 short paragraphs. Where you are, what you're working on
+             now, how you got here, one thing that isn't work. -->
+        A few sentences about who you are and how you got here. Written like you
+        talk, not like a résumé — this is the part people actually read.
+      </p>
+      <p>
+        Right now you're working on something. Say what it is and why it
+        interests you. Mention what kind of problem you'd like to work on next.
+      </p>
+      <p>
+        Outside of that: the non-work thing. It makes you a person instead of a
+        list of technologies, and it's what people remember.
+      </p>
+    </div>
+  </section>
+
+  <!-- ───────────────────────── Contact ───────────────────────── -->
+  <section id="contact" class="section">
+    <h2 class="section-title reveal"><span class="num">03</span> Contact</h2>
+    <div class="prose reveal">
+      <p>Best way to reach me is email. I read everything.</p>
+      <ul class="links">
+        <li><a href="mailto:pranavhirawat618@gmail.com">pranavhirawat618@gmail.com</a></li>
+        <li><a href="https://github.com/Pranav-Hirawat">GitHub <span class="arw" aria-hidden="true">↗</span></a></li>
+        <li><a href="https://www.linkedin.com/in/pranavhirawat/">LinkedIn <span class="arw" aria-hidden="true">↗</span></a></li>
+        <li><a href="#">Résumé (PDF) <span class="arw" aria-hidden="true">↗</span></a></li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>© <span id="year">2026</span> Pranav Hirawat</p>
+  <p><a href="#main">Back to top ↑</a></p>
+</footer>
+
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+<script src="js/motion.js" defer></script>
+</body>
+</html>
