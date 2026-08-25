@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pranav Manoj Hirawat — Résumé</title>
+<style>
+  /* Single column, real text, standard headings — parses cleanly in an ATS. */
+  @page { size: A4; margin: 12mm 14mm; }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 9.5pt;
+    line-height: 1.38;
+    color: #16181b;
+  }
+
+  a { color: #0b4f8a; text-decoration: none; }
+
+  h1 {
+    font-size: 17pt;
+    font-weight: 700;
+    letter-spacing: .06em;
+    margin: 0 0 3pt;
+  }
+
+  .contact { font-size: 9pt; color: #2f3236; margin: 0 0 2pt; }
+  .contact .sep { color: #9aa0a6; padding: 0 4pt; }
+
+  h2 {
+    font-size: 8.6pt;
+    font-weight: 700;
+    letter-spacing: .11em;
+    margin: 11pt 0 4pt;
+    padding-bottom: 2pt;
+    border-bottom: .9pt solid #16181b;
+  }
+
+  .role { display: flex; justify-content: space-between; align-items: baseline; gap: 10pt; }
+  .role-title { font-weight: 700; font-size: 10pt; }
+  .role-date { font-size: 8.8pt; color: #55595e; white-space: nowrap; }
+  .stack { font-size: 8.8pt; color: #55595e; font-style: italic; margin: 1pt 0 2pt; }
+
+  ul { margin: 2pt 0 0; padding-left: 11pt; }
+  li { margin-bottom: 2pt; }
+  li::marker { color: #8b9098; }
+
+  .entry { margin-bottom: 7pt; }
+  .entry:last-child { margin-bottom: 0; }
+
+  .skills div { margin-bottom: 2.4pt; display: flex; gap: 6pt; }
+  .skills b { flex: 0 0 108pt; font-weight: 700; }
+
+  .edu { display: flex; justify-content: space-between; align-items: baseline; gap: 10pt; }
+  p { margin: 0; }
+</style>
+</head>
+<body>
+
+<h1>PRANAV MANOJ HIRAWAT</h1>
+<p class="contact">
+  <a href="tel:+917619592412">+91 76195 92412</a><span class="sep">|</span><a href="mailto:pranavhirawat2005@gmail.com">pranavhirawat2005@gmail.com</a><span class="sep">|</span>Bangalore, India
+</p>
+<p class="contact">
+  <a href="https://www.linkedin.com/in/pranavhirawat/">linkedin.com/in/pranavhirawat</a><span class="sep">|</span><a href="https://github.com/Pranav-Hirawat">github.com/Pranav-Hirawat</a><span class="sep">|</span><a href="https://pranav-hirawat.github.io/personal_website/">pranav-hirawat.github.io</a>
+</p>
+
+<h2>SUMMARY</h2>
+<p>
+  Final-year BCA student at PES University who builds backend systems in Python. Built the
+  decision-making control plane for an API security gateway — an agent loop that correlates attack
+  evidence, decides policy, and integrates a local LLM for incident reporting. Seeking a backend or
+  AI engineering internship.
+</p>
+
+<h2>TECHNICAL SKILLS</h2>
+<div class="skills">
+  <div><b>Languages:</b><span>Python, SQL, JavaScript (basics)</span></div>
+  <div><b>Backend &amp; Data Stores:</b><span>Redis, PostgreSQL, MySQL, REST APIs</span></div>
+  <div><b>AI &amp; ML:</b><span>LLM integration (Ollama), Scikit-learn, NLTK, Pandas, NumPy</span></div>
+  <div><b>Testing &amp; Tools:</b><span>pytest, Git, Linux, Jupyter, Tableau</span></div>
+</div>
+
+<h2>PROJECTS</h2>
+
+<div class="entry">
+  <div class="role">
+    <span class="role-title">Intelligent API Security Gateway — Agentic Control Plane</span>
+  </div>
+  <p class="stack">Python · Redis · Ollama · pytest — team project; built the Python control plane</p>
+  <ul>
+    <li>Built the control plane of an API security gateway: an agent loop running every 30 seconds that reads security events from Redis, decides what to do about them, and writes policy the gateway enforces.</li>
+    <li>Wrote the correlation logic that groups unrelated IP addresses into a single named attack campaign using shared traits — target endpoint, User-Agent, subnet and overlapping timing — with a confidence score per campaign.</li>
+    <li>Implemented the policy engine mapping campaign severity and confidence to an action ladder (monitor, throttle, temporary block, escalate), written to Redis with a TTL so decisions expire without manual cleanup.</li>
+    <li>Integrated a local LLM (Ollama) for incident summaries, with a null-provider fallback so the system runs fully without an LLM available.</li>
+    <li>Placed the LLM strictly downstream of enforcement, so a prompt-injected summary can mislead a human reader but cannot alter a blocking decision. Covered by 249 tests, including a negative scenario that must produce zero detections.</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <div class="role">
+    <span class="role-title">Fake Review Detection System</span>
+    <span class="role-date"><a href="https://fake-review-detector-pranav.streamlit.app/">Live demo</a> · <a href="https://github.com/Pranav-Hirawat/Fake-review-detector">Code</a></span>
+  </div>
+  <p class="stack">Python · Scikit-learn · NLTK · TF-IDF · Streamlit</p>
+  <ul>
+    <li>Built a supervised classification pipeline using TF-IDF vectorization to identify fraudulent product reviews in e-commerce data.</li>
+    <li>Compared multiple algorithms and tuned hyperparameters to select the final model, and deployed it as an interactive Streamlit app that scores a pasted review in real time.</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <div class="role">
+    <span class="role-title">Healthcare Data Analysis</span>
+  </div>
+  <p class="stack">Python · Tableau</p>
+  <ul>
+    <li>Cleaned and analysed multi-variable patient data, then built Tableau dashboards showing relationships between diabetes and cholesterol markers to help identify high-risk groups.</li>
+  </ul>
+</div>
+
+<h2>EDUCATION</h2>
+<div class="edu">
+  <span><b>PES University, Bangalore</b> — Bachelor of Computer Applications (BCA)</span>
+  <span class="role-date">Expected May 2027 &nbsp;|&nbsp; CGPA 7.66 / 10</span>
+</div>
+
+<h2>POSITIONS OF RESPONSIBILITY</h2>
+<ul>
+  <li>Technical Core Team, TAMS — PES University</li>
+  <li>Logistics Team, Chords (inter-college music festival) — coordinated event logistics across vendors and performers</li>
+</ul>
+
+</body>
+</html>
