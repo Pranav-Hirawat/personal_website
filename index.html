@@ -247,9 +247,24 @@
         <li><a href="mailto:pranavhirawat618@gmail.com">pranavhirawat618@gmail.com</a></li>
         <li><a href="tel:+917619592412">+91 76195 92412</a></li>
         <li><a href="https://github.com/Pranav-Hirawat">GitHub <span class="arw" aria-hidden="true">↗</span></a></li>
-        <li><a href="https://www.linkedin.com/in/pranavhirawat/">LinkedIn <span class="arw" aria-hidden="true">↗</span></a></li>
         <li><a href="assets/Pranav-Hirawat-Resume.pdf">Résumé (PDF) <span class="arw" aria-hidden="true">↗</span></a></li>
       </ul>
+
+      <!-- LinkedIn profile badge. The <a> inside is LinkedIn's own fallback: if
+           the script is blocked, fails, or the visitor runs a tracker blocker,
+           the link still renders and still works. -->
+      <div class="li-badge">
+        <div class="badge-base LI-profile-badge"
+             data-locale="en_US"
+             data-size="medium"
+             data-theme="dark"
+             data-type="VERTICAL"
+             data-vanity="pranavhirawat"
+             data-version="v1">
+          <a class="badge-base__link LI-simple-link"
+             href="https://www.linkedin.com/in/pranavhirawat/">LinkedIn — Pranav Hirawat ↗</a>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -261,6 +276,20 @@
 </footer>
 
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+<script>
+  /* LinkedIn renders the badge once, reading data-theme at load, so match it to
+     the theme in effect now. It cannot follow the toggle afterwards — the badge
+     is an iframe we don't control. */
+  (function () {
+    var explicit = document.documentElement.getAttribute('data-theme');
+    var dark = explicit
+      ? explicit === 'dark'
+      : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var badge = document.querySelector('.LI-profile-badge');
+    if (badge) badge.setAttribute('data-theme', dark ? 'dark' : 'light');
+  })();
+</script>
+<script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
 <script src="js/motion.js" defer></script>
 </body>
 </html>

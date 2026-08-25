@@ -589,6 +589,24 @@ a:hover .arw { transform: translate(2px, -2px); }
 }
 .links li:hover::after { transform: scaleX(1); }
 
+/* LinkedIn badge. LinkedIn injects a fixed-size iframe here, so the container
+   just reserves room and keeps it from widening the page. The fallback link
+   inside is styled to match the contact list above. */
+.li-badge { margin-top: 1.75rem; max-width: 100%; overflow-x: auto; }
+.li-badge .badge-base { max-width: 100%; }
+.li-badge iframe { max-width: 100% !important; }
+.li-badge .LI-simple-link {
+  display: inline-block;
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color .2s var(--ease);
+}
+.li-badge .LI-simple-link:hover { border-bottom-color: currentColor; }
+/* Once LinkedIn's iframe is in, its fallback link is a duplicate — hide it.
+   Scoped to :has(iframe) so a blocked or failed script still leaves the link. */
+.li-badge:has(iframe) .LI-simple-link { display: none; }
+
 /* ============================================================
    Footer
    ============================================================ */
