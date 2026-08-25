@@ -121,12 +121,15 @@
 
   if (!reduced && finePointer) {
     document.querySelectorAll('.btn').forEach(function (btn) {
-      var PULL = 0.28;   // fraction of the cursor's offset from centre
+      var PULL = 0.15;   // fraction of the cursor's offset from centre
+      var MAX  = 9;      // px, so the button never lunges out from under you
+
+      var clamp = function (n) { return Math.max(-MAX, Math.min(n, MAX)); };
 
       btn.addEventListener('pointermove', function (e) {
         var b = btn.getBoundingClientRect();
-        btn.style.setProperty('--mx', ((e.clientX - (b.left + b.width / 2)) * PULL).toFixed(1) + 'px');
-        btn.style.setProperty('--my', ((e.clientY - (b.top + b.height / 2)) * PULL).toFixed(1) + 'px');
+        btn.style.setProperty('--mx', clamp((e.clientX - (b.left + b.width / 2)) * PULL).toFixed(1) + 'px');
+        btn.style.setProperty('--my', clamp((e.clientY - (b.top + b.height / 2)) * PULL).toFixed(1) + 'px');
       }, { passive: true });
 
       btn.addEventListener('pointerleave', function () {
@@ -161,6 +164,57 @@
     window.addEventListener('scroll', parallax, { passive: true });
     parallax();
   }
+
+  /* ---- Copy-to-clipboard ---------------------------------------------
+     mailto: silently does nothing when no mail client is registered, which
+     looks like a broken link. This always works. */
+
+  document.querySelectorAll('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var value = btn.dataset.copy;
+
+      /* If the clipboard is refused (permission denied, or a browser that
+         blocks it in this context), select the address instead — otherwise
+         "Press Cmd-C" is advice the visitor cannot act on. */
+      function selectAddress() {
+        var link = btn.parentNode.querySelector('a');
+        if (!link) return;
+        var range = document.createRange();
+        range.selectNodeContents(link);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+
+      function done(ok) {
+        if (!ok) selectAddress();
+        btn.textContent = ok ? 'Copied' : 'Press \u2318C';
+        btn.classList.toggle('is-done', ok);
+        setTimeout(function () {
+          btn.textContent = 'Copy';
+          btn.classList.remove('is-done');
+        }, ok ? 1800 : 3000);
+      }
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(value).then(function () { done(true); },
+                                                  function () { done(false); });
+        return;
+      }
+
+      /* Fallback for insecure contexts, where the clipboard API is absent. */
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = value;
+        ta.setAttribute('readonly', '');
+        ta.style.cssText = 'position:absolute;left:-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        done(document.execCommand('copy'));
+        document.body.removeChild(ta);
+      } catch (e) { done(false); }
+    });
+  });
 
   /* ---- Nav highlighting --------------------------------------------- */
 
