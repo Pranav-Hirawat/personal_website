@@ -137,12 +137,13 @@
 
   /* ---- entrance + counter ------------------------------------------- */
 
-  function animate() {
+  function animate(hasGraph) {
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var svg = document.getElementById('gh-graph');
+    var svg = hasGraph ? document.getElementById('gh-graph') : null;
     var counter = section.querySelector('.gh-count');
 
     function count() {
+      if (!counter) return;
       var to = parseInt(counter.dataset.to, 10) || 0;
       if (reduced) { counter.textContent = to.toLocaleString(); return; }
 
@@ -156,19 +157,18 @@
       });
     }
 
-    if (reduced || !('IntersectionObserver' in window)) {
-      svg.classList.add('gh-lit');
+    function light() {
+      if (svg) svg.classList.add('gh-lit');
       section.classList.add('gh-lit-repos');
       count();
-      return;
     }
+
+    if (reduced || !('IntersectionObserver' in window)) { light(); return; }
 
     var seen = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (!e.isIntersecting) return;
-        svg.classList.add('gh-lit');
-        section.classList.add('gh-lit-repos');
-        count();
+        light();
         seen.disconnect();
       });
     }, { threshold: 0.15 });
@@ -209,17 +209,31 @@
 
   /* ---- go ------------------------------------------------------------ */
 
-  Promise.all([
+  /* allSettled, not all: the two endpoints fail independently — GitHub's API
+     rate-limits per IP, and either host can be blocked by a content blocker.
+     Half a section beats none, so render whatever arrived and only give up
+     if both failed. */
+  Promise.allSettled([
     j('https://github-contributions-api.jogruber.de/v4/' + USER + '?y=last'),
     j('https://api.github.com/users/' + USER + '/repos?sort=pushed&per_page=100')
   ]).then(function (res) {
-    var graph = res[0], repos = res[1];
+    var graph = res[0].status === 'fulfilled' ? res[0].value : null;
+    var repos = res[1].status === 'fulfilled' ? res[1].value : null;
 
-    if (!graph.contributions || !graph.contributions.length) throw new Error('no contribution data');
-    if (!Array.isArray(repos)) throw new Error('no repo data');
+    var gotGraph = !!(graph && graph.contributions && graph.contributions.length);
+    var gotRepos = !!(repos && Array.isArray(repos) && repos.length);
 
-    drawGraph(graph.contributions, (graph.total && graph.total.lastYear) || 0);
-    drawRepos(repos);
+    if (!gotGraph && !gotRepos) {
+      section.remove();
+      if (window.console) console.info('GitHub section skipped: both requests failed');
+      return;
+    }
+
+    if (gotGraph) drawGraph(graph.contributions, (graph.total && graph.total.lastYear) || 0);
+    else section.querySelector('.gh-graph-wrap').remove();
+
+    if (gotRepos) drawRepos(repos);
+    else document.getElementById('gh-repos').remove();
 
     section.hidden = false;
 
@@ -227,12 +241,7 @@
        got measured. Tell it to look again now that the section has height. */
     window.dispatchEvent(new Event('resize'));
 
-    animate();
-    tooltip();
-  }).catch(function (err) {
-    /* Rate limited, offline, or the service is down. Leave the section out
-       entirely — the contact list already links to the profile. */
-    section.remove();
-    if (window.console) console.info('GitHub section skipped:', err.message);
+    animate(gotGraph);
+    if (gotGraph) tooltip();
   });
 })();
