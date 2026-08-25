@@ -7,7 +7,8 @@ index.html      all the content lives here
 css/style.css   design tokens at the top, sections below
 js/theme.js     dark/light toggle, remembers the choice
 js/motion.js    sticky header, reading progress, reveal-on-scroll, nav highlight
-assets/         images, résumé PDF, favicon
+js/github.js    contribution heat map and repo cards, from the public GitHub API
+assets/         résumé PDF, images, favicon
 ```
 
 `js/motion.js` is pure decoration — delete it and the page still reads fine.
