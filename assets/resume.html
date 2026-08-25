@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pranav Hirawat — Résumé</title>
+<style>
+  /* Print-first. Single column and real text throughout, so applicant
+     tracking systems can parse it. */
+  @page { size: A4; margin: 14mm 15mm; }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 10.2pt;
+    line-height: 1.46;
+    color: #17181a;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  a { color: #0b4f8a; text-decoration: none; }
+
+  /* ---- header ---- */
+  h1 {
+    font-size: 21pt;
+    letter-spacing: .01em;
+    margin: 0 0 2pt;
+    font-weight: 600;
+  }
+  .tagline { font-size: 9.8pt; color: #4a4d52; margin: 0 0 5pt; }
+  .contact { font-size: 9pt; color: #35383c; margin: 0 0 11pt; }
+  .contact span { white-space: nowrap; }
+  .sep { color: #a8acb2; padding: 0 5pt; }
+
+  /* ---- sections ---- */
+  h2 {
+    font-size: 8.6pt;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: #17181a;
+    margin: 0 0 5pt;
+    padding-bottom: 2.5pt;
+    border-bottom: .8pt solid #17181a;
+  }
+  section { margin-bottom: 10pt; }
+
+  /* ---- entries ---- */
+  .entry { margin-bottom: 8pt; }
+  .entry:last-child { margin-bottom: 0; }
+
+  .entry-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10pt;
+  }
+  .entry-title { font-weight: 700; font-size: 10pt; }
+  .entry-date { font-size: 8.6pt; color: #5c6067; white-space: nowrap; }
+  .entry-sub { font-size: 8.9pt; color: #5c6067; font-style: italic; margin-bottom: 2.5pt; }
+
+  ul { margin: 2pt 0 0; padding-left: 12pt; }
+  li { margin-bottom: 2.2pt; }
+  li::marker { color: #8b9098; }
+
+  .skills { margin: 0; }
+  .skills div { display: flex; gap: 9pt; margin-bottom: 3.2pt; }
+  .skills b { flex: 0 0 62pt; font-weight: 700; }
+
+  .links { font-size: 8.8pt; color: #5c6067; margin-top: 2.5pt; }
+</style>
+</head>
+<body>
+
+<h1>Pranav Hirawat</h1>
+<p class="tagline">AI engineering — LLM integration, applied ML, and the systems that keep them honest.</p>
+<p class="contact">
+  <span>Bengaluru, India</span><span class="sep">|</span><span>+91 76195 92412</span><span class="sep">|</span><span><a href="mailto:pranavhirawat618@gmail.com">pranavhirawat618@gmail.com</a></span><span class="sep">|</span><span><a href="https://github.com/Pranav-Hirawat">github.com/Pranav-Hirawat</a></span><span class="sep">|</span><span><a href="https://www.linkedin.com/in/pranavhirawat/">linkedin.com/in/pranavhirawat</a></span>
+</p>
+
+<section>
+  <h2>Skills</h2>
+  <div class="skills">
+    <div><b>Languages</b> Python, Go, Swift, SQL</div>
+    <div><b>AI / ML</b> LLM integration (Ollama), prompt-injection mitigation, provider abstraction and fallback, scikit-learn, NLP, TF-IDF, model evaluation (precision / recall / F1, confusion matrix)</div>
+    <div><b>Systems</b> Redis (streams, consumer groups, TTL policy), event-driven pipelines, agent loops</div>
+    <div><b>Practice</b> pytest, property-based testing, Git, SwiftUI, Streamlit</div>
+  </div>
+</section>
+
+<section>
+  <h2>Projects</h2>
+
+  <div class="entry">
+    <div class="entry-head">
+      <span class="entry-title">Agentic Control Plane — Intelligent API Security Gateway</span>
+      <span class="entry-date">Jan 2026 – Present</span>
+    </div>
+    <div class="entry-sub">PES University · four-person project · sole author of the Python control plane</div>
+    <ul>
+      <li><b>Integrated an LLM (Ollama) to write incident summaries, sequenced strictly after enforcement</b> — a prompt-injected summary can mislead a human reader but cannot unblock an attacker. Narration is optional: a null provider keeps the system fully functional with no model present.</li>
+      <li>Built a 30-second agent loop — observe, correlate, decide, act, explain — that reads attack evidence from a Redis stream and writes enforcement policy back with a TTL, so every decision expires on its own rather than needing revocation.</li>
+      <li>Designed union-find correlation over shared traits (endpoint, User-Agent, subnet, timing) that groups scattered IPs into one campaign, so an attacker rotating addresses is still recognised as a single actor.</li>
+      <li>Mapped severity and confidence onto an action ladder (monitor → throttle → temporary block → escalate); enforcement that fails promotes a campaign rather than repeating itself.</li>
+      <li><b>249 tests against 3,925 lines of source (0.84:1 test-to-code)</b>, testing properties rather than paths — including that narration failures can never fail a cycle and that clean traffic produces zero detections. One runtime dependency; the rest is standard library.</li>
+    </ul>
+  </div>
+
+  <div class="entry">
+    <div class="entry-head">
+      <span class="entry-title">Fake Review Detector</span>
+      <span class="entry-date">Mar – Apr 2026</span>
+    </div>
+    <div class="entry-sub">PES University</div>
+    <ul>
+      <li>Built an NLP classifier distinguishing computer-generated product reviews from genuine ones, over a cleaned, stopword-stripped, TF-IDF-vectorised corpus.</li>
+      <li>Compared logistic regression against naive Bayes, reaching <b>~89% accuracy</b>, and evaluated with a confusion matrix and precision / recall / F1 rather than accuracy alone — on a task where a false accusation costs more than a miss.</li>
+      <li>Deployed as an interactive Streamlit app scoring pasted reviews in real time.</li>
+      <li class="links">Live: <a href="https://fake-review-detector-pranav.streamlit.app/">fake-review-detector-pranav.streamlit.app</a> · Code: <a href="https://github.com/Pranav-Hirawat/Fake-review-detector">github.com/Pranav-Hirawat/Fake-review-detector</a></li>
+    </ul>
+  </div>
+
+  <div class="entry">
+    <div class="entry-head">
+      <span class="entry-title">Helivor — Disaster Management iOS App</span>
+      <span class="entry-date">Oct 2025</span>
+    </div>
+    <div class="entry-sub">PES University</div>
+    <ul>
+      <li>Built a SwiftUI app that keeps its intelligence <b>on-device</b>, so guidance and local weather conditions stay available when disaster has taken out connectivity — the moment a server round trip is least likely to succeed.</li>
+      <li class="links">Code: <a href="https://github.com/Pranav-Hirawat/disastermanagment">github.com/Pranav-Hirawat/disastermanagment</a></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <h2>Education</h2>
+  <div class="entry">
+    <div class="entry-head">
+      <span class="entry-title">Bachelor of Computer Applications (BCA)</span>
+      <span class="entry-date">Expected 2027</span>
+    </div>
+    <div class="entry-sub">PES University, Bengaluru</div>
+  </div>
+</section>
+
+</body>
+</html>
