@@ -32,6 +32,7 @@
     <a class="wordmark" href="./">Pranav<span class="surname">&nbsp;Hirawat</span></a>
     <nav aria-label="Primary">
       <a href="#work">Work</a>
+      <a href="#github">GitHub</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
       <button id="theme-toggle" type="button" aria-label="Switch color theme" title="Switch color theme">
@@ -210,9 +211,35 @@
     </ol>
   </section>
 
+  <!-- ───────────────────────── GitHub ───────────────────────── -->
+  <!-- Filled in by js/github.js from the public GitHub API. If either request
+       fails the section removes itself, so a rate limit or an outage never
+       leaves a broken panel on the page. -->
+  <section id="github" class="section" hidden>
+    <h2 class="section-title reveal"><span class="num">02</span> GitHub</h2>
+
+    <div class="gh-graph-wrap">
+      <p class="gh-total" id="gh-total"></p>
+      <div class="gh-scroll">
+        <svg id="gh-graph" class="gh-graph" role="img" aria-label="Contribution activity over the last year"></svg>
+      </div>
+      <p class="gh-legend">
+        <span>Less</span>
+        <i data-level="0"></i><i data-level="1"></i><i data-level="2"></i><i data-level="3"></i><i data-level="4"></i>
+        <span>More</span>
+      </p>
+    </div>
+
+    <ul class="gh-repos" id="gh-repos"></ul>
+
+    <p class="gh-more">
+      <a href="https://github.com/Pranav-Hirawat">All repositories <span class="arw" aria-hidden="true">↗</span></a>
+    </p>
+  </section>
+
   <!-- ───────────────────────── About ───────────────────────── -->
   <section id="about" class="section">
-    <h2 class="section-title reveal"><span class="num">02</span> About</h2>
+    <h2 class="section-title reveal"><span class="num">03</span> About</h2>
     <div class="prose reveal">
       <p>
         I'm drawn to the part of a system that has to decide something under
@@ -240,7 +267,7 @@
 
   <!-- ───────────────────────── Contact ───────────────────────── -->
   <section id="contact" class="section">
-    <h2 class="section-title reveal"><span class="num">03</span> Contact</h2>
+    <h2 class="section-title reveal"><span class="num">04</span> Contact</h2>
     <div class="prose reveal">
       <p>Best way to reach me is email. I read everything.</p>
       <ul class="links">
@@ -290,6 +317,7 @@
   })();
 </script>
 <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
+<script src="js/github.js" defer></script>
 <script src="js/motion.js" defer></script>
 </body>
 </html>

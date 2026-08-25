@@ -13,6 +13,7 @@
   --fg-faint:  #6f6b5f;
   --rule:      #e2ded6;
   --accent:    #a8481f;
+  --accent-rgb: 168, 72, 31;
   --accent-bg: #f6ebe4;
 
   --header-bg: rgba(250, 249, 247, .72);
@@ -40,6 +41,7 @@
     --fg-faint:  #8b8579;
     --rule:      #2e2b25;
     --accent:    #e8895c;
+    --accent-rgb: 232, 137, 92;
     --accent-bg: #2a1d15;
 
     --header-bg: rgba(20, 19, 15, .72);
@@ -57,6 +59,7 @@
   --fg-faint:  #8b8579;
   --rule:      #2e2b25;
   --accent:    #e8895c;
+  --accent-rgb: 232, 137, 92;
   --accent-bg: #2a1d15;
 
   --header-bg: rgba(20, 19, 15, .72);
@@ -557,6 +560,112 @@ a { color: inherit; }
   transition: transform .25s var(--ease);
 }
 a:hover .arw { transform: translate(2px, -2px); }
+
+/* ============================================================
+   GitHub section
+   ============================================================ */
+
+.gh-total {
+  margin: 0 0 .9rem;
+  font-size: .9375rem;
+  color: var(--fg-muted);
+}
+
+/* 53 weeks never fits a phone — let the graph scroll inside its own box
+   rather than widening the page. */
+.gh-scroll { overflow-x: auto; padding-bottom: .35rem; }
+/* Opt out of the global `svg { max-width: 100% }` — squashed to fit, a year of
+   squares becomes ~4px each and unreadable. Keep full size and let it scroll,
+   which is what GitHub's own graph does on a phone. */
+.gh-graph { display: block; max-width: none; }
+.gh-graph rect { stroke: var(--rule); stroke-width: .5; }
+.gh-graph rect[data-level="0"] { fill: var(--bg-sunk); }
+.gh-graph rect[data-level="1"] { fill: rgba(var(--accent-rgb), .28); }
+.gh-graph rect[data-level="2"] { fill: rgba(var(--accent-rgb), .50); }
+.gh-graph rect[data-level="3"] { fill: rgba(var(--accent-rgb), .74); }
+.gh-graph rect[data-level="4"] { fill: rgb(var(--accent-rgb)); }
+.gh-month {
+  fill: var(--fg-faint);
+  font-family: var(--font-mono);
+  font-size: 9px;
+}
+
+.gh-legend {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  margin: .7rem 0 0;
+  font-family: var(--font-mono);
+  font-size: .6875rem;
+  color: var(--fg-faint);
+}
+.gh-legend i {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+  border: .5px solid var(--rule);
+}
+.gh-legend i[data-level="0"] { background: var(--bg-sunk); }
+.gh-legend i[data-level="1"] { background: rgba(var(--accent-rgb), .28); }
+.gh-legend i[data-level="2"] { background: rgba(var(--accent-rgb), .50); }
+.gh-legend i[data-level="3"] { background: rgba(var(--accent-rgb), .74); }
+.gh-legend i[data-level="4"] { background: rgb(var(--accent-rgb)); }
+.gh-legend span:first-child { margin-right: .2rem; }
+.gh-legend span:last-child  { margin-left: .2rem; }
+
+/* Separate bordered cards rather than a shared grid with hairline gaps —
+   an odd repo count would otherwise leave a filled empty cell in the last row. */
+.gh-repos {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: .75rem;
+  margin: 2.25rem 0 0;
+  padding: 0;
+}
+.gh-repo {
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  transition: background .25s var(--ease), border-color .25s var(--ease);
+}
+.gh-repo:hover { background: var(--bg-sunk); border-color: var(--fg-faint); }
+
+.gh-repo-name {
+  font-family: var(--font-mono);
+  font-size: .875rem;
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color .2s var(--ease);
+}
+.gh-repo-name:hover { border-bottom-color: currentColor; }
+
+.gh-repo-desc {
+  margin: .5rem 0 0;
+  font-size: .875rem;
+  line-height: 1.5;
+  color: var(--fg-muted);
+}
+.gh-repo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .85rem;
+  margin: .65rem 0 0;
+  font-family: var(--font-mono);
+  font-size: .6875rem;
+  color: var(--fg-faint);
+}
+
+.gh-more { margin: 1.5rem 0 0; font-size: .9375rem; }
+.gh-more a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color .2s var(--ease);
+}
+.gh-more a:hover { border-bottom-color: currentColor; }
 
 /* ============================================================
    Contact links
