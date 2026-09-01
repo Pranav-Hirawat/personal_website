@@ -7,11 +7,11 @@
 
 :root {
   --bg:        #faf9f7;
-  --bg-sunk:   #f2f0ec;
+  --bg-sunk:   #efece6;
   --fg:        #16150f;
   --fg-muted:  #5f5c54;
   --fg-faint:  #6f6b5f;
-  --rule:      #e2ded6;
+  --rule:      #d6d0c4;
   --accent:    #a8481f;
   --accent-rgb: 168, 72, 31;
   --accent-bg: #f6ebe4;
@@ -20,6 +20,18 @@
   --glow:      rgba(168, 72, 31, .10);
   --grain:     .035;
   --shadow:    0 1px 2px rgba(22, 21, 15, .06), 0 8px 24px rgba(22, 21, 15, .07);
+
+  /* Type scale. Eight steps, each doing a distinct job — the previous set had
+     ten sizes with 12/14/19 sitting so close to their neighbours that they read
+     as inconsistency rather than hierarchy. */
+  --t-2xs:  .6875rem;   /* 11px — mono micro: tags, legend, meta      */
+  --t-xs:   .8125rem;   /* 13px — section labels, dt, footer          */
+  --t-sm:   .9375rem;   /* 15px — nav, links, buttons                 */
+  --t-base: 1.0625rem;  /* 17px — body                                */
+  --t-md:   1.25rem;    /* 20px — lede                                */
+  --t-wordmark: 1.375rem;
+  --t-lg:   2rem;       /* 32px — project titles                      */
+  --t-display: clamp(2.75rem, 8vw, 4.75rem);
 
   --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
   --font-body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -35,11 +47,11 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg:        #14130f;
-    --bg-sunk:   #1c1a16;
+    --bg-sunk:   #201e19;
     --fg:        #f2efe8;
     --fg-muted:  #a8a297;
     --fg-faint:  #8b8579;
-    --rule:      #2e2b25;
+    --rule:      #3a352c;
     --accent:    #e8895c;
     --accent-rgb: 232, 137, 92;
     --accent-bg: #2a1d15;
@@ -53,11 +65,11 @@
 
 :root[data-theme="dark"] {
   --bg:        #14130f;
-  --bg-sunk:   #1c1a16;
+  --bg-sunk:   #201e19;
   --fg:        #f2efe8;
   --fg-muted:  #a8a297;
   --fg-faint:  #8b8579;
-  --rule:      #2e2b25;
+  --rule:      #3a352c;
   --accent:    #e8895c;
   --accent-rgb: 232, 137, 92;
   --accent-bg: #2a1d15;
@@ -92,7 +104,7 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-body);
-  font-size: 1.0625rem;
+  font-size: var(--t-base);
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -187,7 +199,7 @@ a { color: inherit; }
 
 .wordmark {
   font-family: var(--font-display);
-  font-size: 1.4rem;
+  font-size: var(--t-wordmark);
   letter-spacing: .01em;
   text-decoration: none;
   transition: color .2s var(--ease);
@@ -198,7 +210,7 @@ a { color: inherit; }
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  font-size: .9375rem;
+  font-size: var(--t-sm);
 }
 
 .site-header nav a {
@@ -228,6 +240,8 @@ a { color: inherit; }
 #theme-toggle {
   display: grid;
   place-items: center;
+  /* Inherits the UA's 13.333px otherwise — an eleventh size doing no work. */
+  font-size: var(--t-sm);
   width: 2rem;
   height: 2rem;
   padding: 0;
@@ -309,7 +323,7 @@ a { color: inherit; }
   border: 1px solid var(--rule);
   border-radius: 999px;
   background: var(--bg-sunk);
-  font-size: .8125rem;
+  font-size: var(--t-xs);
   color: var(--fg-muted);
 }
 .status .dot {
@@ -328,7 +342,7 @@ a { color: inherit; }
 .hero h1 {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(2.75rem, 8vw, 4.75rem);
+  font-size: var(--t-display);
   line-height: 1.04;
   letter-spacing: -.015em;
   margin: 0 0 1.5rem;
@@ -345,7 +359,7 @@ a { color: inherit; }
 
 .lede {
   max-width: var(--measure);
-  font-size: 1.1875rem;
+  font-size: var(--t-md);
   color: var(--fg-muted);
   margin: 0 0 2rem;
 }
@@ -359,7 +373,7 @@ a { color: inherit; }
   border: 1px solid var(--fg);
   background: var(--fg);
   color: var(--bg);
-  font-size: .9375rem;
+  font-size: var(--t-sm);
   text-decoration: none;
   transition: transform .25s var(--ease), box-shadow .25s var(--ease),
               background .25s var(--ease), border-color .25s var(--ease), color .25s var(--ease);
@@ -405,7 +419,7 @@ a { color: inherit; }
   align-items: center;
   gap: .85rem;
   font-family: var(--font-body);
-  font-size: .8125rem;
+  font-size: var(--t-xs);
   font-weight: 600;
   letter-spacing: .12em;
   text-transform: uppercase;
@@ -414,7 +428,7 @@ a { color: inherit; }
 }
 .section-title .num {
   font-family: var(--font-mono);
-  font-size: .75rem;
+  font-size: var(--t-xs);
   font-weight: 400;
   color: var(--accent);
 }
@@ -488,7 +502,7 @@ a { color: inherit; }
 
 .project-index {
   font-family: var(--font-mono);
-  font-size: .8125rem;
+  font-size: var(--t-xs);
   color: var(--fg-faint);
   padding-top: .45rem;
   transition: color .3s var(--ease);
@@ -498,7 +512,7 @@ a { color: inherit; }
 .project-title {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: 1.875rem;
+  font-size: var(--t-lg);
   line-height: 1.15;
   margin: 0 0 .6rem;
 }
@@ -506,7 +520,7 @@ a { color: inherit; }
 .project-meta { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 1.1rem; }
 .tag {
   font-family: var(--font-mono);
-  font-size: .6875rem;
+  font-size: var(--t-2xs);
   letter-spacing: .04em;
   text-transform: uppercase;
   color: var(--fg-muted);
@@ -532,7 +546,7 @@ a { color: inherit; }
 /* Role line — sits between the tags and the detail list. */
 .project-role {
   margin: -.5rem 0 1.1rem;
-  font-size: .9375rem;
+  font-size: var(--t-sm);
   color: var(--fg-faint);
 }
 
@@ -545,7 +559,7 @@ a { color: inherit; }
   max-width: 42rem;
 }
 .project-detail dt {
-  font-size: .75rem;
+  font-size: var(--t-xs);
   font-weight: 600;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -554,7 +568,7 @@ a { color: inherit; }
 }
 .project-detail dd { margin: 0; color: var(--fg-muted); }
 
-.project-links { display: flex; flex-wrap: wrap; gap: 1.25rem; margin: 0; font-size: .9375rem; }
+.project-links { display: flex; flex-wrap: wrap; gap: 1.25rem; margin: 0; font-size: var(--t-sm); }
 .project-links a {
   color: var(--accent);
   text-decoration: none;
@@ -576,7 +590,7 @@ a:hover .arw { transform: translate(2px, -2px); }
 
 .gh-total {
   margin: 0 0 .9rem;
-  font-size: .9375rem;
+  font-size: var(--t-sm);
   color: var(--fg-muted);
 }
 
@@ -596,7 +610,7 @@ a:hover .arw { transform: translate(2px, -2px); }
 .gh-month {
   fill: var(--fg-faint);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
 }
 
 /* Squares sweep in column by column (delay set per-rect in github.js).
@@ -625,7 +639,7 @@ a:hover .arw { transform: translate(2px, -2px); }
   background: var(--bg-sunk);
   box-shadow: var(--shadow);
   font-family: var(--font-mono);
-  font-size: .6875rem;
+  font-size: var(--t-2xs);
   color: var(--fg);
   opacity: 0;
   transform: translateY(3px);
@@ -639,7 +653,7 @@ a:hover .arw { transform: translate(2px, -2px); }
   gap: .3rem;
   margin: .7rem 0 0;
   font-family: var(--font-mono);
-  font-size: .6875rem;
+  font-size: var(--t-2xs);
   color: var(--fg-faint);
 }
 .gh-legend i {
@@ -686,7 +700,7 @@ a:hover .arw { transform: translate(2px, -2px); }
 
 .gh-repo-name {
   font-family: var(--font-mono);
-  font-size: .875rem;
+  font-size: var(--t-sm);
   color: var(--accent);
   text-decoration: none;
   border-bottom: 1px solid transparent;
@@ -696,7 +710,7 @@ a:hover .arw { transform: translate(2px, -2px); }
 
 .gh-repo-desc {
   margin: .5rem 0 0;
-  font-size: .875rem;
+  font-size: var(--t-sm);
   line-height: 1.5;
   color: var(--fg-muted);
 }
@@ -706,11 +720,11 @@ a:hover .arw { transform: translate(2px, -2px); }
   gap: .85rem;
   margin: .65rem 0 0;
   font-family: var(--font-mono);
-  font-size: .6875rem;
+  font-size: var(--t-2xs);
   color: var(--fg-faint);
 }
 
-.gh-more { margin: 1.5rem 0 0; font-size: .9375rem; }
+.gh-more { margin: 1.5rem 0 0; font-size: var(--t-sm); }
 .gh-more a {
   color: var(--accent);
   text-decoration: none;
@@ -751,7 +765,7 @@ a:hover .arw { transform: translate(2px, -2px); }
   background: transparent;
   color: var(--fg-muted);
   font-family: var(--font-mono);
-  font-size: .6875rem;
+  font-size: var(--t-2xs);
   letter-spacing: .04em;
   text-transform: uppercase;
   cursor: pointer;
@@ -812,7 +826,7 @@ a:hover .arw { transform: translate(2px, -2px); }
   margin-inline: auto;
   padding: 2rem var(--gutter) 3rem;
   border-top: 1px solid var(--rule);
-  font-size: .875rem;
+  font-size: var(--t-xs);
   color: var(--fg-faint);
 }
 .site-footer p { margin: 0; }
@@ -848,6 +862,14 @@ a:hover .arw { transform: translate(2px, -2px); }
 }
 .js-motion .reveal.as-line.is-visible { transform: none; }
 
+/* Freeze transitions while the palette swaps. The circular wipe below is the
+   transition; letting every bordered element also interpolate its own colours
+   makes the change muddy, and those per-element transitions can stick
+   mid-interpolation and leave the wrong colour behind. */
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after { transition: none !important; }
+
 /* ============================================================
    Theme switch — circular wipe out of the toggle button.
    Falls back to the browser's default crossfade, and to a plain
@@ -873,7 +895,7 @@ a:hover .arw { transform: translate(2px, -2px); }
   /* Keep the header on one line — wrapped, it ate a third of the screen. */
   .header-inner { padding-block: 1.1rem; flex-wrap: nowrap; }
   .wordmark { font-size: 1.15rem; white-space: nowrap; }
-  .site-header nav { gap: .9rem; font-size: .8125rem; }
+  .site-header nav { gap: .9rem; font-size: var(--t-xs); }
   #theme-toggle { width: 1.75rem; height: 1.75rem; }
   #theme-toggle svg { width: 15px; height: 15px; }
 }

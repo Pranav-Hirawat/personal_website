@@ -24,8 +24,19 @@
   }
 
   function apply(next) {
-    document.documentElement.setAttribute('data-theme', next);
+    var root = document.documentElement;
+
+    /* Suppress per-element colour transitions for the swap itself, then
+       restore them so hover states still animate. */
+    root.classList.add('theme-switching');
+    root.setAttribute('data-theme', next);
     try { localStorage.setItem(KEY, next); } catch (e) { /* ignore */ }
+
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        root.classList.remove('theme-switching');
+      });
+    });
   }
 
   /* Anchor the wipe on the button and size it to reach the furthest corner,
