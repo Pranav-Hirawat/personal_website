@@ -6,20 +6,20 @@
    ============================================================ */
 
 :root {
-  --bg:        #faf9f7;
-  --bg-sunk:   #efece6;
-  --fg:        #16150f;
-  --fg-muted:  #5f5c54;
-  --fg-faint:  #6f6b5f;
-  --rule:      #d6d0c4;
-  --accent:    #a8481f;
-  --accent-rgb: 168, 72, 31;
-  --accent-bg: #f6ebe4;
+  --bg:        #f6f8fa;
+  --bg-sunk:   #e9eef3;
+  --fg:        #0d1520;
+  --fg-muted:  #4a5a6b;
+  --fg-faint:  #5c6b7a;
+  --rule:      #c8d4de;
+  --accent:    #0e7490;
+  --accent-rgb: 14, 116, 144;
+  --accent-bg: #dbeef4;
 
-  --header-bg: rgba(250, 249, 247, .72);
-  --glow:      rgba(168, 72, 31, .10);
-  --grain:     .035;
-  --shadow:    0 1px 2px rgba(22, 21, 15, .06), 0 8px 24px rgba(22, 21, 15, .07);
+  --header-bg: rgba(246, 248, 250, .72);
+  --glow:      rgba(14, 116, 144, .11);
+  --grain:     .03;
+  --shadow:    0 1px 2px rgba(13, 21, 32, .07), 0 8px 24px rgba(13, 21, 32, .09);
 
   /* Type scale. Eight steps, each doing a distinct job — the previous set had
      ten sizes with 12/14/19 sitting so close to their neighbours that they read
@@ -46,38 +46,38 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg:        #14130f;
-    --bg-sunk:   #201e19;
-    --fg:        #f2efe8;
-    --fg-muted:  #a8a297;
-    --fg-faint:  #8b8579;
-    --rule:      #3a352c;
-    --accent:    #e8895c;
-    --accent-rgb: 232, 137, 92;
-    --accent-bg: #2a1d15;
+    --bg:        #0b1119;
+    --bg-sunk:   #141d28;
+    --fg:        #e6edf3;
+    --fg-muted:  #93a4b5;
+    --fg-faint:  #7a8b9c;
+    --rule:      #253444;
+    --accent:    #38bdf8;
+    --accent-rgb: 56, 189, 248;
+    --accent-bg: #10283a;
 
-    --header-bg: rgba(20, 19, 15, .72);
-    --glow:      rgba(232, 137, 92, .12);
-    --grain:     .05;
-    --shadow:    0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .35);
+    --header-bg: rgba(11, 17, 25, .72);
+    --glow:      rgba(56, 189, 248, .13);
+    --grain:     .045;
+    --shadow:    0 1px 2px rgba(0, 0, 0, .45), 0 8px 24px rgba(0, 0, 0, .4);
   }
 }
 
 :root[data-theme="dark"] {
-  --bg:        #14130f;
-  --bg-sunk:   #201e19;
-  --fg:        #f2efe8;
-  --fg-muted:  #a8a297;
-  --fg-faint:  #8b8579;
-  --rule:      #3a352c;
-  --accent:    #e8895c;
-  --accent-rgb: 232, 137, 92;
-  --accent-bg: #2a1d15;
+  --bg:        #0b1119;
+  --bg-sunk:   #141d28;
+  --fg:        #e6edf3;
+  --fg-muted:  #93a4b5;
+  --fg-faint:  #7a8b9c;
+  --rule:      #253444;
+  --accent:    #38bdf8;
+  --accent-rgb: 56, 189, 248;
+  --accent-bg: #10283a;
 
-  --header-bg: rgba(20, 19, 15, .72);
-  --glow:      rgba(232, 137, 92, .12);
-  --grain:     .05;
-  --shadow:    0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .35);
+  --header-bg: rgba(11, 17, 25, .72);
+  --glow:      rgba(56, 189, 248, .13);
+  --grain:     .045;
+  --shadow:    0 1px 2px rgba(0, 0, 0, .45), 0 8px 24px rgba(0, 0, 0, .4);
 }
 
 /* ============================================================
@@ -207,14 +207,33 @@ a { color: inherit; }
 .wordmark:hover { color: var(--accent); }
 
 .site-header nav {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 1.5rem;
   font-size: var(--t-sm);
 }
 
+/* Pill that slides to whichever section you're in. Positioned by motion.js. */
+.nav-pill {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 1.85rem;
+  width: 0;
+  margin-top: -.925rem;
+  border-radius: 999px;
+  background: var(--accent-bg);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(var(--pill-x, 0));
+  transition: transform .45s var(--ease), width .45s var(--ease), opacity .3s var(--ease);
+}
+.nav-pill.is-on { opacity: 1; }
+
 .site-header nav a {
   position: relative;
+  z-index: 1;
   text-decoration: none;
   color: var(--fg-muted);
   padding-bottom: 3px;
@@ -355,7 +374,24 @@ a { color: inherit; }
   margin-bottom: -.12em;
 }
 .hero h1 .line > span { display: block; }
-.hero h1 em { font-style: italic; color: var(--accent); }
+/* Accent word. The colour itself animates rather than a gradient clipped to
+   the text: background-clip:text reports as supported in engines that then
+   don't paint it, and the failure mode there is the word going invisible on
+   the most important line of the page. This one degrades to a solid accent. */
+.hero h1 em {
+  font-style: italic;
+  color: rgb(var(--accent-rgb));
+  animation: accent-pulse 6s ease-in-out infinite;
+}
+
+@keyframes accent-pulse {
+  0%, 100% { color: rgb(var(--accent-rgb)); }
+  50%      { color: color-mix(in oklab, rgb(var(--accent-rgb)) 62%, var(--fg)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero h1 em { animation: none !important; }
+}
 
 .lede {
   max-width: var(--measure);
@@ -411,8 +447,23 @@ a { color: inherit; }
   max-width: var(--page);
   margin-inline: auto;
   padding: clamp(2.5rem, 7vh, 4rem) var(--gutter);
-  border-top: 1px solid var(--rule);
 }
+/* Divider as a pseudo-element so it can draw itself in on scroll. */
+.section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--rule);
+}
+.js-motion .section::before {
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 1s var(--ease);
+}
+.js-motion .section.is-drawn::before { transform: scaleX(1); }
 
 .section-title {
   display: flex;
@@ -466,6 +517,8 @@ a { color: inherit; }
   border-top: 1px solid var(--rule);
 }
 .project:first-child { border-top: 0; padding-top: 0; }
+.js-motion .project { border-top-color: transparent; }
+.js-motion .project.is-visible { border-top-color: var(--rule); transition: border-top-color .8s var(--ease) .1s; }
 
 /* Tinted panel that fades in behind the row on hover. */
 .project::before {
@@ -567,6 +620,12 @@ a { color: inherit; }
   padding-top: .25rem;
 }
 .project-detail dd { margin: 0; color: var(--fg-muted); }
+
+.tally {
+  font-variant-numeric: tabular-nums;
+  color: var(--fg);
+  font-weight: 600;
+}
 
 .project-links { display: flex; flex-wrap: wrap; gap: 1.25rem; margin: 0; font-size: var(--t-sm); }
 .project-links a {
@@ -840,6 +899,12 @@ a:hover .arw { transform: translate(2px, -2px); }
    still works with JS disabled or reduced motion on.
    ============================================================ */
 
+.js-motion .project.reveal {
+  transform: translateY(26px) scale(.985);
+  transform-origin: 0 50%;
+}
+.js-motion .project.reveal.is-visible { transform: none; }
+
 .js-motion .reveal {
   opacity: 0;
   transform: translateY(16px);
@@ -853,14 +918,24 @@ a:hover .arw { transform: translate(2px, -2px); }
   will-change: auto;
 }
 
-/* Headline lines slide up out of their mask instead of fading. */
-.js-motion .reveal.as-line {
-  opacity: 1;
-  transform: translateY(105%);
-  transition: transform .95s var(--ease);
-  transition-delay: var(--d, 0ms);
+/* Headline. motion.js splits each line into .word > .ch spans; without JS the
+   line is plain text and simply sits there, styled but unanimated. */
+.hero h1 .word { display: inline-block; white-space: nowrap; }
+.hero h1 .ch   { display: inline-block; will-change: transform, opacity; }
+
+.js-motion .reveal.as-line { opacity: 1; }
+.js-motion .reveal.as-line .ch {
+  opacity: 0;
+  transform: translateY(88%) rotate(4deg);
+  transition: opacity .5s var(--ease), transform .68s var(--ease);
+  transition-delay: calc(var(--d, 0ms) + var(--i, 0) * 18ms);
 }
-.js-motion .reveal.as-line.is-visible { transform: none; }
+.js-motion .reveal.as-line.is-visible .ch {
+  opacity: 1;
+  transform: none;
+}
+/* No JS split (or reduced motion): nothing may be left invisible. */
+.js-motion .reveal.as-line:not(.is-split) { opacity: 1; }
 
 /* Freeze transitions while the palette swaps. The circular wipe below is the
    transition; letting every bordered element also interpolate its own colours

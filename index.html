@@ -18,8 +18,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
-<script src="js/theme.js"></script>
+<!-- Bump ?v= whenever css/js changes: GitHub Pages caches assets for ~10
+     minutes, so without this a returning visitor can get a stale mix. -->
+<link rel="stylesheet" href="css/style.css?v=5">
+<script src="js/theme.js?v=5"></script>
 </head>
 <body>
 
@@ -32,6 +34,7 @@
   <div class="header-inner">
     <a class="wordmark" href="./">Pranav<span class="surname">&nbsp;Hirawat</span></a>
     <nav aria-label="Primary">
+      <span class="nav-pill" aria-hidden="true"></span>
       <a href="#work">Work</a>
       <a href="#github">GitHub</a>
       <a href="#about">About</a>
@@ -122,7 +125,9 @@
             </dd>
             <dt>Outcome</dt>
             <dd>
-              3,925 lines of source against 3,289 lines of tests: 249 tests at a 0.84:1
+              <span class="tally" data-to="3925" data-comma>3,925</span> lines of source
+              against <span class="tally" data-to="3289" data-comma>3,289</span> lines of
+              tests: <span class="tally" data-to="249">249</span> tests at a 0.84:1
               ratio, testing properties rather than paths — including that clean traffic
               produces zero detections. One runtime dependency; the rest is standard library.
               Kill the control plane and the gateway keeps serving traffic unchanged — it
@@ -160,7 +165,7 @@
             </dd>
             <dt>Outcome</dt>
             <dd>
-              ~89% accuracy, read through a confusion matrix and precision/recall/F1 rather
+              ~<span class="tally" data-to="89">89</span>% accuracy, read through a confusion matrix and precision/recall/F1 rather
               than accuracy alone — on a task where a false accusation costs more than a
               miss.
             </dd>
@@ -315,7 +320,7 @@
   })();
 </script>
 <script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
-<script src="js/github.js" defer></script>
-<script src="js/motion.js" defer></script>
+<script src="js/github.js?v=5" defer></script>
+<script src="js/motion.js?v=5" defer></script>
 </body>
 </html>

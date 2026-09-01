@@ -165,6 +165,96 @@
     parallax();
   }
 
+  /* ---- Split the headline into characters -----------------------------
+     Done in JS so the HTML stays plain text: without this the line renders
+     normally, just unanimated. Words stay intact as inline-block spans so
+     line-breaking still works; spaces stay as real text between them. */
+
+  if (!reduced) {
+    document.querySelectorAll('.as-line').forEach(function (line) {
+      var index = 0;
+
+      function split(node) {
+        var out = document.createDocumentFragment();
+
+        Array.prototype.slice.call(node.childNodes).forEach(function (child) {
+          if (child.nodeType === 3) {                       // text
+            child.textContent.split(/(\s+)/).forEach(function (chunk) {
+              if (!chunk) return;
+              if (/^\s+$/.test(chunk)) { out.appendChild(document.createTextNode(chunk)); return; }
+
+              var word = document.createElement('span');
+              word.className = 'word';
+              chunk.split('').forEach(function (ch) {
+                var el = document.createElement('span');
+                el.className = 'ch';
+                el.style.setProperty('--i', index++);
+                el.textContent = ch;
+                word.appendChild(el);
+              });
+              out.appendChild(word);
+            });
+          } else if (child.nodeType === 1) {                // keep <em> etc.
+            var clone = child.cloneNode(false);
+            clone.appendChild(split(child));
+            out.appendChild(clone);
+          }
+        });
+        return out;
+      }
+
+      var built = split(line);
+      line.textContent = '';
+      line.appendChild(built);
+      line.classList.add('is-split');
+    });
+  }
+
+  /* ---- Counting numbers ------------------------------------------------ */
+
+  if ('IntersectionObserver' in window) {
+    var tallies = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        tallies.unobserve(el);
+
+        var to = parseFloat(el.dataset.to);
+        if (isNaN(to)) return;
+        var comma = el.hasAttribute('data-comma');
+        var show = function (n) {
+          el.textContent = comma ? Math.round(n).toLocaleString() : String(Math.round(n));
+        };
+
+        if (reduced) { show(to); return; }
+
+        var start = null, DUR = 1200;
+        requestAnimationFrame(function step(t) {
+          if (start === null) start = t;
+          var p = Math.min((t - start) / DUR, 1);
+          show(to * (1 - Math.pow(1 - p, 3)));
+          if (p < 1) requestAnimationFrame(step);
+        });
+      });
+    }, { threshold: 0.6 });
+
+    document.querySelectorAll('.tally').forEach(function (el) { tallies.observe(el); });
+  }
+
+  /* ---- Section dividers draw in ---------------------------------------- */
+
+  if (!reduced && 'IntersectionObserver' in window) {
+    var drawer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-drawn');
+        drawer.unobserve(entry.target);
+      });
+    }, { rootMargin: '0px 0px -15% 0px' });
+
+    document.querySelectorAll('.section').forEach(function (el) { drawer.observe(el); });
+  }
+
   /* ---- Copy-to-clipboard ---------------------------------------------
      mailto: silently does nothing when no mail client is registered, which
      looks like a broken link. This always works. */
@@ -218,6 +308,27 @@
 
   /* ---- Nav highlighting --------------------------------------------- */
 
+  /* Slide the pill to sit behind the active link. */
+  var pill = document.querySelector('.nav-pill');
+
+  function movePill(active) {
+    if (!pill) return;
+
+    var link = active && navLinks.filter(function (a) {
+      return a.getAttribute('href') === '#' + active.id;
+    })[0];
+
+    if (!link) { pill.classList.remove('is-on'); return; }
+
+    var nav = link.parentNode.getBoundingClientRect();
+    var box = link.getBoundingClientRect();
+    var padX = 10;
+
+    pill.style.width = (box.width + padX * 2) + 'px';
+    pill.style.setProperty('--pill-x', (box.left - nav.left - padX) + 'px');
+    pill.classList.add('is-on');
+  }
+
   var sections = navLinks
     .map(function (a) { return document.querySelector(a.getAttribute('href')); })
     .filter(Boolean);
@@ -248,6 +359,8 @@
           a.removeAttribute('aria-current');
         }
       });
+
+      movePill(active);
     };
 
     var spy = new IntersectionObserver(syncNav, { rootMargin: '-20% 0px -60% 0px' });
