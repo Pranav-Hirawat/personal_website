@@ -1,6 +1,6 @@
 /* ============================================================
    Tokens
-   Light is the base. Dark is redefined in two places: the system
+   Light is the base. Dark is redefined twice: the system
    preference (unless the user explicitly chose light) and the
    explicit [data-theme="dark"] override from the toggle.
    ============================================================ */
@@ -16,30 +16,29 @@
   --accent-rgb: 14, 116, 144;
   --accent-bg: #dbeef4;
 
-  --header-bg: rgba(246, 248, 250, .72);
-  --glow:      rgba(14, 116, 144, .11);
+  --header-bg: rgba(246, 248, 250, .7);
+  --glow:      rgba(14, 116, 144, .13);
   --grain:     .03;
-  --shadow:    0 1px 2px rgba(13, 21, 32, .07), 0 8px 24px rgba(13, 21, 32, .09);
+  --shadow:    0 1px 2px rgba(13, 21, 32, .07), 0 10px 30px rgba(13, 21, 32, .1);
 
-  /* Type scale. Eight steps, each doing a distinct job — the previous set had
-     ten sizes with 12/14/19 sitting so close to their neighbours that they read
-     as inconsistency rather than hierarchy. */
-  --t-2xs:  .6875rem;   /* 11px — mono micro: tags, legend, meta      */
-  --t-xs:   .8125rem;   /* 13px — section labels, dt, footer          */
-  --t-sm:   .9375rem;   /* 15px — nav, links, buttons                 */
-  --t-base: 1.0625rem;  /* 17px — body                                */
-  --t-md:   1.25rem;    /* 20px — lede                                */
-  --t-wordmark: 1.375rem;
-  --t-lg:   2rem;       /* 32px — project titles                      */
-  --t-display: clamp(2.75rem, 8vw, 4.75rem);
+  /* Eight steps, each with a distinct job. */
+  --t-2xs:  .6875rem;
+  --t-xs:   .8125rem;
+  --t-sm:   .9375rem;
+  --t-base: 1.0625rem;
+  --t-md:   1.25rem;
+  --t-lg:   2rem;
+  --t-display: clamp(2.75rem, min(11vw, 19vh), 8rem);
+  --t-stat:    clamp(3rem, min(15vw, 21vh), 12rem);
 
   --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
   --font-body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 
-  --measure: 34rem;   /* readable line length */
-  --page: 60rem;      /* max page width */
-  --gutter: clamp(1.25rem, 5vw, 4rem);
+  --measure: 34rem;
+  --page: 66rem;
+  --gutter: clamp(1.25rem, 6vw, 5rem);
+  --bar-h: 4.5rem;
 
   --ease: cubic-bezier(.22, .61, .36, 1);
 }
@@ -56,10 +55,10 @@
     --accent-rgb: 56, 189, 248;
     --accent-bg: #10283a;
 
-    --header-bg: rgba(11, 17, 25, .72);
-    --glow:      rgba(56, 189, 248, .13);
+    --header-bg: rgba(11, 17, 25, .7);
+    --glow:      rgba(56, 189, 248, .15);
     --grain:     .045;
-    --shadow:    0 1px 2px rgba(0, 0, 0, .45), 0 8px 24px rgba(0, 0, 0, .4);
+    --shadow:    0 1px 2px rgba(0, 0, 0, .45), 0 10px 30px rgba(0, 0, 0, .45);
   }
 }
 
@@ -74,29 +73,34 @@
   --accent-rgb: 56, 189, 248;
   --accent-bg: #10283a;
 
-  --header-bg: rgba(11, 17, 25, .72);
-  --glow:      rgba(56, 189, 248, .13);
+  --header-bg: rgba(11, 17, 25, .7);
+  --glow:      rgba(56, 189, 248, .15);
   --grain:     .045;
-  --shadow:    0 1px 2px rgba(0, 0, 0, .45), 0 8px 24px rgba(0, 0, 0, .4);
+  --shadow:    0 1px 2px rgba(0, 0, 0, .45), 0 10px 30px rgba(0, 0, 0, .45);
 }
 
 /* ============================================================
-   Reset / base
+   Base
    ============================================================ */
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 5rem; }
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* proximity, not mandatory: a panel taller than the viewport (long project
+     text, short laptop screens) must stay freely scrollable rather than
+     fighting the user back to a snap point. */
+  scroll-snap-type: y proximity;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
+  html {
+    scroll-behavior: auto;
+    scroll-snap-type: none;   /* snapping is itself motion */
+  }
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
-
-  /* Looping animations need switching off outright. Squashing their duration
-     to .01ms makes them iterate hundreds of times a second instead of
-     stopping — a strobe, for exactly the people who asked for less motion. */
-  .hero-glow i,
-  .status .dot { animation: none !important; }
+  .glow i, .status .dot, .cue span { animation: none !important; }
 }
 
 body {
@@ -105,293 +109,180 @@ body {
   color: var(--fg);
   font-family: var(--font-body);
   font-size: var(--t-base);
-  line-height: 1.65;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
 }
 
 img, svg { max-width: 100%; }
-
 a { color: inherit; }
-
 ::selection { background: var(--accent-bg); color: var(--fg); }
 
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
-  border-radius: 2px;
-}
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
 
 .skip { position: absolute; left: -9999px; }
 .skip:focus {
-  left: var(--gutter);
-  top: 1rem;
-  z-index: 40;
-  background: var(--bg);
-  border: 1px solid var(--rule);
-  padding: .5rem .9rem;
-  border-radius: 6px;
-  text-decoration: none;
+  left: var(--gutter); top: 1rem; z-index: 60;
+  background: var(--bg); border: 1px solid var(--rule);
+  padding: .5rem .9rem; border-radius: 6px; text-decoration: none;
 }
 
-/* ============================================================
-   Decorative overlays
-   ============================================================ */
-
-/* Film grain — an inline SVG turbulence tile, so no image request. */
 .grain {
-  position: fixed;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  opacity: var(--grain);
-  mix-blend-mode: overlay;
+  position: fixed; inset: 0; z-index: 1;
+  pointer-events: none; opacity: var(--grain); mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* ============================================================
-   Header — sticky, frosted once you scroll past the top
+   Fixed chrome: top bar + panel rail
    ============================================================ */
 
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  background: transparent;
-  border-bottom: 1px solid transparent;
-  transition: background .35s var(--ease), border-color .35s var(--ease), backdrop-filter .35s;
-}
-
-.site-header.is-stuck {
+.bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 40;
+  display: flex; align-items: center; justify-content: space-between;
+  height: var(--bar-h);
+  padding-inline: var(--gutter);
   background: var(--header-bg);
-  border-bottom-color: var(--rule);
-  -webkit-backdrop-filter: saturate(1.6) blur(12px);
-  backdrop-filter: saturate(1.6) blur(12px);
+  -webkit-backdrop-filter: saturate(1.6) blur(14px);
+  backdrop-filter: saturate(1.6) blur(14px);
+  border-bottom: 1px solid transparent;
+  transition: border-color .4s var(--ease);
 }
-
-.header-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-  max-width: var(--page);
-  margin-inline: auto;
-  padding: 1.5rem var(--gutter);
-  transition: padding .35s var(--ease);
-}
-.site-header.is-stuck .header-inner { padding-block: .85rem; }
-
-/* Reading-progress hairline pinned to the header's bottom edge. */
-.progress {
-  position: absolute;
-  left: 0;
-  bottom: -1px;
-  height: 2px;
-  width: 100%;
-  transform: scaleX(var(--p, 0));
-  transform-origin: 0 50%;
-  background: var(--accent);
-  opacity: 0;
-  transition: opacity .35s var(--ease);
-}
-.site-header.is-stuck .progress { opacity: 1; }
+.bar.is-past { border-bottom-color: var(--rule); }
 
 .wordmark {
   font-family: var(--font-display);
-  font-size: var(--t-wordmark);
-  letter-spacing: .01em;
-  text-decoration: none;
+  font-size: 1.375rem; letter-spacing: .01em; text-decoration: none;
   transition: color .2s var(--ease);
 }
 .wordmark:hover { color: var(--accent); }
 
-.site-header nav {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  font-size: var(--t-sm);
-}
-
-/* Pill that slides to whichever section you're in. Positioned by motion.js. */
-.nav-pill {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  height: 1.85rem;
-  width: 0;
-  margin-top: -.925rem;
-  border-radius: 999px;
-  background: var(--accent-bg);
-  opacity: 0;
-  pointer-events: none;
-  transform: translateX(var(--pill-x, 0));
-  transition: transform .45s var(--ease), width .45s var(--ease), opacity .3s var(--ease);
-}
-.nav-pill.is-on { opacity: 1; }
-
-.site-header nav a {
-  position: relative;
-  z-index: 1;
-  text-decoration: none;
-  color: var(--fg-muted);
-  padding-bottom: 3px;
-  transition: color .2s var(--ease);
-}
-.site-header nav a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 1px;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: 0 50%;
-  transition: transform .3s var(--ease);
-}
-.site-header nav a:hover { color: var(--fg); }
-.site-header nav a:hover::after,
-.site-header nav a[aria-current="true"]::after { transform: scaleX(1); }
-.site-header nav a[aria-current="true"] { color: var(--fg); }
-
 #theme-toggle {
-  display: grid;
-  place-items: center;
-  /* Inherits the UA's 13.333px otherwise — an eleventh size doing no work. */
+  display: grid; place-items: center;
+  width: 2rem; height: 2rem; padding: 0;
   font-size: var(--t-sm);
-  width: 2rem;
-  height: 2rem;
-  padding: 0;
-  border: 1px solid var(--rule);
-  border-radius: 50%;
-  background: transparent;
-  color: var(--fg-muted);
-  cursor: pointer;
+  border: 1px solid var(--rule); border-radius: 50%;
+  background: transparent; color: var(--fg-muted); cursor: pointer;
   transition: color .2s var(--ease), border-color .2s var(--ease), transform .4s var(--ease);
 }
-#theme-toggle:hover {
-  color: var(--accent);
-  border-color: var(--accent);
-  transform: rotate(45deg);
-}
+#theme-toggle:hover { color: var(--accent); border-color: var(--accent); transform: rotate(45deg); }
 #theme-toggle svg { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
 
-/* Show the icon for the theme you'd switch TO: a sun while dark, a moon while light. */
 .sun { display: none; }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .sun  { display: inline; }
   :root:not([data-theme="light"]) .moon { display: none; }
 }
-:root[data-theme="dark"] .sun  { display: inline; }
+:root[data-theme="dark"] .sun { display: inline; }
 :root[data-theme="dark"] .moon { display: none; }
-:root[data-theme="light"] .sun  { display: none; }
+:root[data-theme="light"] .sun { display: none; }
 :root[data-theme="light"] .moon { display: inline; }
 
+/* Dot rail down the right edge. */
+.rail {
+  position: fixed; z-index: 40;
+  right: clamp(.85rem, 2.2vw, 1.75rem); top: 50%;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: .85rem;
+}
+.rail button {
+  width: 1.5rem; height: 1.5rem; padding: 0;
+  display: grid; place-items: center;
+  background: none; border: 0; cursor: pointer;
+}
+.rail span {
+  display: block; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--rule);
+  transition: background .3s var(--ease), transform .3s var(--ease);
+}
+.rail button:hover span { background: var(--fg-muted); transform: scale(1.3); }
+.rail button[aria-current="true"] span {
+  background: var(--accent);
+  transform: scale(1.5);
+}
+
 /* ============================================================
-   Hero
+   Panels
    ============================================================ */
 
-.hero {
+.panels { position: relative; z-index: 2; }
+
+.panel {
+  scroll-snap-align: start;
+  min-height: 100svh;
+  display: grid;
+  align-items: center;
+  padding: calc(var(--bar-h) + 2rem) var(--gutter) 4rem;
   position: relative;
-  max-width: var(--page);
-  margin-inline: auto;
-  padding: clamp(2.5rem, 9vh, 5rem) var(--gutter) clamp(3rem, 9vh, 5rem);
-  /* --out is driven by scroll in motion.js: 0 at rest, 1 once scrolled past. */
-  opacity: calc(1 - (var(--out, 0) * .65));
-  transform: translateY(calc(var(--out, 0) * -24px));
-  will-change: opacity, transform;
+}
+/* Hairline between panels rather than a hard edge. */
+.panel + .panel { border-top: 1px solid var(--rule); }
+
+.wrap { width: 100%; max-width: var(--page); margin-inline: auto; }
+
+.idx {
+  font-family: var(--font-mono);
+  font-size: var(--t-xs);
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 .9rem;
 }
 
-/* Soft accent bloom behind the headline.
-   Bounded to the hero's own width so it can never widen the page — the
-   gradient's centre is offset instead. Bleeding upward is free: negative
-   top never creates a scrollbar. */
-.hero-glow {
-  position: absolute;
-  top: -9rem;
-  left: 0;
-  right: 0;
-  height: 36rem;
-  pointer-events: none;
-  /* Clips the inner element, which scales past these bounds as it drifts.
-     The gradient has faded out long before the edge, so nothing shows. */
-  overflow: hidden;
-  /* Wrapper carries the scroll parallax; the inner <i> carries the ambient
-     drift, so the two transforms never fight over the same property. */
-  transform: translate3d(0, var(--par, 0px), 0);
+.panel h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2.25rem, 6vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -.015em;
+  margin: 0 0 .75rem;
 }
-.hero-glow i {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(34rem 26rem at 16% 46%, var(--glow) 0%, transparent 66%);
-  animation: drift 22s var(--ease) infinite alternate;
+
+/* ---- Hero ---- */
+
+.hero { overflow: hidden; }
+
+.glow {
+  position: absolute; inset: -20% -10% auto -10%; height: 90%;
+  pointer-events: none; overflow: hidden;
+}
+.glow i {
+  position: absolute; inset: 0;
+  background: radial-gradient(45rem 34rem at 22% 42%, var(--glow) 0%, transparent 68%);
+  animation: drift 24s var(--ease) infinite alternate;
 }
 @keyframes drift {
-  from { transform: translate3d(0, 0, 0) scale(1); }
-  to   { transform: translate3d(4%, 2%, 0) scale(1.12); }
+  from { transform: translate3d(0,0,0) scale(1); }
+  to   { transform: translate3d(5%, 3%, 0) scale(1.14); }
 }
 
 .status {
-  display: inline-flex;
-  align-items: center;
-  gap: .55rem;
-  margin: 0 0 1.75rem;
-  padding: .3rem .8rem .3rem .7rem;
-  border: 1px solid var(--rule);
-  border-radius: 999px;
+  display: inline-flex; align-items: center; gap: .55rem;
+  margin: 0 0 1.75rem; padding: .3rem .85rem .3rem .7rem;
+  border: 1px solid var(--rule); border-radius: 999px;
   background: var(--bg-sunk);
-  font-size: var(--t-xs);
-  color: var(--fg-muted);
+  font-size: var(--t-xs); color: var(--fg-muted);
 }
 .status .dot {
-  width: .5rem;
-  height: .5rem;
-  border-radius: 50%;
+  width: .5rem; height: .5rem; border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 0 0 0 var(--accent);
   animation: pulse 2.4s var(--ease) infinite;
 }
 @keyframes pulse {
   0%        { box-shadow: 0 0 0 0 var(--glow); }
-  70%, 100% { box-shadow: 0 0 0 .55rem transparent; }
+  70%, 100% { box-shadow: 0 0 0 .6rem transparent; }
 }
 
 .hero h1 {
   font-family: var(--font-display);
   font-weight: 400;
   font-size: var(--t-display);
-  line-height: 1.04;
-  letter-spacing: -.015em;
+  line-height: .92;
+  letter-spacing: -.03em;
   margin: 0 0 1.5rem;
 }
-/* The mask. padding/margin pair keeps descenders from being clipped. */
-.hero h1 .line {
-  display: block;
-  overflow: hidden;
-  padding-bottom: .12em;
-  margin-bottom: -.12em;
-}
-.hero h1 .line > span { display: block; }
-/* Accent word. The colour itself animates rather than a gradient clipped to
-   the text: background-clip:text reports as supported in engines that then
-   don't paint it, and the failure mode there is the word going invisible on
-   the most important line of the page. This one degrades to a solid accent. */
-.hero h1 em {
-  font-style: italic;
-  color: rgb(var(--accent-rgb));
-  animation: accent-pulse 6s ease-in-out infinite;
-}
-
-@keyframes accent-pulse {
-  0%, 100% { color: rgb(var(--accent-rgb)); }
-  50%      { color: color-mix(in oklab, rgb(var(--accent-rgb)) 62%, var(--fg)); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero h1 em { animation: none !important; }
-}
+.hero h1 .line { display: block; overflow: hidden; padding-bottom: .1em; margin-bottom: -.1em; }
+.hero h1 .split { display: block; }
+.hero h1 .word { display: inline-block; white-space: nowrap; }
+.hero h1 .ch { display: inline-block; }
 
 .lede {
   max-width: var(--measure);
@@ -400,280 +291,228 @@ a { color: inherit; }
   margin: 0 0 2rem;
 }
 
-.hero-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin: 0; }
+.cta { display: flex; flex-wrap: wrap; gap: .75rem; margin: 0; }
 
 .btn {
   display: inline-block;
-  padding: .6rem 1.25rem;
+  padding: .65rem 1.35rem;
   border-radius: 999px;
   border: 1px solid var(--fg);
-  background: var(--fg);
-  color: var(--bg);
-  font-size: var(--t-sm);
-  text-decoration: none;
+  background: var(--fg); color: var(--bg);
+  font-size: var(--t-sm); text-decoration: none;
+  transform: translate(var(--mx, 0px), var(--my, 0px));
   transition: transform .25s var(--ease), box-shadow .25s var(--ease),
               background .25s var(--ease), border-color .25s var(--ease), color .25s var(--ease);
 }
-/* --mx/--my are nudged toward the cursor by motion.js on fine pointers. */
-.btn { transform: translate(var(--mx, 0px), var(--my, 0px)); }
-.btn:hover {
-  transform: translate(var(--mx, 0px), calc(var(--my, 0px) - 2px));
-  box-shadow: var(--shadow);
-}
-.btn:active { transform: translate(var(--mx, 0px), var(--my, 0px)); }
-
-/* Light sweeps across the solid button on hover. */
-.btn:not(.ghost) { position: relative; overflow: hidden; }
-.btn:not(.ghost)::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(105deg, transparent 42%, rgba(255, 255, 255, .28) 50%, transparent 58%);
-  transform: translateX(-130%);
-  transition: transform .75s var(--ease);
-}
-.btn:not(.ghost):hover::after { transform: translateX(130%); }
-
+.btn:hover { transform: translate(var(--mx, 0px), calc(var(--my, 0px) - 2px)); box-shadow: var(--shadow); }
 .btn.ghost { background: transparent; color: var(--fg); border-color: var(--rule); }
 .btn.ghost:hover { background: var(--bg-sunk); border-color: var(--fg); }
 
-/* ============================================================
-   Sections
-   ============================================================ */
-
-.section {
-  position: relative;
-  z-index: 2;
-  max-width: var(--page);
-  margin-inline: auto;
-  padding: clamp(2.5rem, 7vh, 4rem) var(--gutter);
-}
-/* Divider as a pseudo-element so it can draw itself in on scroll. */
-.section::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: var(--rule);
-}
-.js-motion .section::before {
-  transform: scaleX(0);
-  transform-origin: 0 50%;
-  transition: transform 1s var(--ease);
-}
-.js-motion .section.is-drawn::before { transform: scaleX(1); }
-
-.section-title {
-  display: flex;
-  align-items: center;
-  gap: .85rem;
-  font-family: var(--font-body);
-  font-size: var(--t-xs);
-  font-weight: 600;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--fg-muted);
-  margin: 0 0 2.5rem;
-}
-.section-title .num {
+.cue {
+  position: absolute; bottom: 1.75rem; left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
   font-family: var(--font-mono);
-  font-size: var(--t-xs);
-  font-weight: 400;
-  color: var(--accent);
-}
-/* Hairline that runs out to the right margin, drawn in on reveal. */
-.section-title::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: var(--rule);
-}
-.js-motion .section-title::after {
-  transform: scaleX(0);
-  transform-origin: 0 50%;
-  transition: transform .9s var(--ease) .15s;
-}
-.js-motion .section-title.is-visible::after { transform: scaleX(1); }
-
-.prose { max-width: var(--measure); }
-.prose p { margin: 0 0 1.15rem; color: var(--fg-muted); }
-.prose p:last-child { margin-bottom: 0; }
-
-/* ============================================================
-   Projects
-   ============================================================ */
-
-.projects { list-style: none; margin: 0; padding: 0; }
-
-.project {
-  position: relative;
-  isolation: isolate;
-  display: grid;
-  grid-template-columns: 3.5rem 1fr;
-  gap: 0 1.5rem;
-  padding: 2rem 0;
-  border-top: 1px solid var(--rule);
-}
-.project:first-child { border-top: 0; padding-top: 0; }
-.js-motion .project { border-top-color: transparent; }
-.js-motion .project.is-visible { border-top-color: var(--rule); transition: border-top-color .8s var(--ease) .1s; }
-
-/* Tinted panel that fades in behind the row on hover. */
-.project::before {
-  content: "";
-  position: absolute;
-  inset: .5rem -1.25rem;
-  z-index: -1;
-  border-radius: 12px;
-  /* Spotlight follows the cursor (--mx/--my set by js/motion.js), sitting
-     over the flat panel tint. */
-  background:
-    radial-gradient(16rem circle at var(--mx, 50%) var(--my, 50%), var(--glow) 0%, transparent 70%),
-    var(--bg-sunk);
-  opacity: 0;
-  transition: opacity .3s var(--ease);
-}
-.project:hover::before { opacity: 1; }
-
-/* Accent bar that grows down the left edge. */
-.project::after {
-  content: "";
-  position: absolute;
-  left: -1.25rem;
-  top: .5rem;
-  bottom: .5rem;
-  width: 2px;
-  border-radius: 2px;
-  background: var(--accent);
-  transform: scaleY(0);
-  transform-origin: 50% 0;
-  transition: transform .35s var(--ease);
-}
-.project:hover::after { transform: scaleY(1); }
-
-.project-index {
-  font-family: var(--font-mono);
-  font-size: var(--t-xs);
+  font-size: var(--t-2xs); letter-spacing: .18em; text-transform: uppercase;
   color: var(--fg-faint);
-  padding-top: .45rem;
-  transition: color .3s var(--ease);
+  display: flex; align-items: center; gap: .5rem;
 }
-.project:hover .project-index { color: var(--accent); }
+.cue span { display: inline-block; animation: nudge 2s var(--ease) infinite; }
+@keyframes nudge {
+  0%, 100% { transform: translateY(0); opacity: .5; }
+  50%      { transform: translateY(4px); opacity: 1; }
+}
 
-.project-title {
+/* ---- Work panels: big stat beside the detail ---- */
+
+.work .wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+
+.stat { min-width: 0; }
+.stat b {
+  display: block;
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: var(--t-lg);
-  line-height: 1.15;
-  margin: 0 0 .6rem;
+  font-size: var(--t-stat);
+  line-height: .85;
+  letter-spacing: -.04em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
 }
-
-.project-meta { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 1.1rem; }
-.tag {
-  font-family: var(--font-mono);
-  font-size: var(--t-2xs);
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  color: var(--fg-muted);
-  background: var(--bg);
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  padding: .2rem .6rem;
-  transition: border-color .3s var(--ease);
-}
-.project:hover .tag { border-color: var(--fg-faint); }
-
-.js-motion .project .tag {
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity .5s var(--ease), transform .5s var(--ease), border-color .3s var(--ease);
-}
-.js-motion .project.is-visible .tag { opacity: 1; transform: none; }
-.js-motion .project.is-visible .tag:nth-child(1) { transition-delay: .22s; }
-.js-motion .project.is-visible .tag:nth-child(2) { transition-delay: .30s; }
-.js-motion .project.is-visible .tag:nth-child(3) { transition-delay: .38s; }
-.js-motion .project.is-visible .tag:nth-child(n+4) { transition-delay: .46s; }
-
-/* Role line — sits between the tags and the detail list. */
-.project-role {
-  margin: -.5rem 0 1.1rem;
+.stat > span {
+  display: block;
+  margin-top: .9rem;
+  max-width: 15rem;
   font-size: var(--t-sm);
   color: var(--fg-faint);
 }
 
-/* Problem / Built / Outcome — label in the left column, text on the right. */
-.project-detail {
-  display: grid;
-  grid-template-columns: 5.5rem 1fr;
-  gap: .5rem 1rem;
-  margin: 0 0 1.1rem;
-  max-width: 42rem;
-}
-.project-detail dt {
-  font-size: var(--t-xs);
-  font-weight: 600;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--fg-faint);
-  padding-top: .25rem;
-}
-.project-detail dd { margin: 0; color: var(--fg-muted); }
+.role { margin: 0 0 .9rem; font-size: var(--t-sm); color: var(--fg-faint); }
 
-.tally {
-  font-variant-numeric: tabular-nums;
-  color: var(--fg);
-  font-weight: 600;
+.tags { display: flex; flex-wrap: wrap; gap: .4rem; margin: 0 0 1.35rem; }
+.tags span {
+  font-family: var(--font-mono);
+  font-size: var(--t-2xs);
+  letter-spacing: .04em; text-transform: uppercase;
+  color: var(--fg-muted);
+  background: var(--bg-sunk);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: .22rem .65rem;
 }
 
-.project-links { display: flex; flex-wrap: wrap; gap: 1.25rem; margin: 0; font-size: var(--t-sm); }
-.project-links a {
-  color: var(--accent);
-  text-decoration: none;
+.detail p { margin: 0 0 .85rem; color: var(--fg-muted); }
+.detail p:last-child { margin-bottom: 0; }
+.detail b { color: var(--fg); font-weight: 600; }
+.detail em { color: var(--accent); font-style: normal; font-weight: 600; }
+
+.keyline {
+  border-left: 2px solid var(--accent);
+  padding-left: 1rem;
+  margin-top: 1.1rem !important;
+}
+
+.links { display: flex; flex-wrap: wrap; gap: 1.35rem; margin: 1.4rem 0 0; font-size: var(--t-sm); }
+.links a {
+  color: var(--accent); text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: border-color .2s var(--ease);
 }
-.project-links a:hover { border-bottom-color: currentColor; }
-
-/* Arrow that nudges up and to the right on hover. */
-.arw {
-  display: inline-block;
-  transition: transform .25s var(--ease);
-}
+.links a:hover { border-bottom-color: currentColor; }
+.arw { display: inline-block; transition: transform .25s var(--ease); }
 a:hover .arw { transform: translate(2px, -2px); }
 
-/* ============================================================
-   GitHub section
-   ============================================================ */
+/* ---- GitHub panel ---- */
 
-.gh-total {
-  margin: 0 0 .9rem;
-  font-size: var(--t-sm);
-  color: var(--fg-muted);
-}
+.gh-total { margin: 0 0 .9rem; font-size: var(--t-sm); color: var(--fg-muted); }
+.gh-count { font-variant-numeric: tabular-nums; color: var(--fg); font-weight: 600; }
 
-/* 53 weeks never fits a phone — let the graph scroll inside its own box
-   rather than widening the page. */
+.gh-graph-wrap { position: relative; }
 .gh-scroll { overflow-x: auto; padding-bottom: .35rem; }
-/* Opt out of the global `svg { max-width: 100% }` — squashed to fit, a year of
-   squares becomes ~4px each and unreadable. Keep full size and let it scroll,
-   which is what GitHub's own graph does on a phone. */
+/* Opt out of the global svg cap: squashed to fit, a year of squares becomes
+   ~4px each and unreadable. Full size and scroll, like GitHub's own. */
 .gh-graph { display: block; max-width: none; }
 .gh-graph rect { stroke: var(--rule); stroke-width: .5; }
 .gh-graph rect[data-level="0"] { fill: var(--bg-sunk); }
 .gh-graph rect[data-level="1"] { fill: rgba(var(--accent-rgb), .28); }
-.gh-graph rect[data-level="2"] { fill: rgba(var(--accent-rgb), .50); }
+.gh-graph rect[data-level="2"] { fill: rgba(var(--accent-rgb), .5); }
 .gh-graph rect[data-level="3"] { fill: rgba(var(--accent-rgb), .74); }
 .gh-graph rect[data-level="4"] { fill: rgb(var(--accent-rgb)); }
-.gh-month {
-  fill: var(--fg-faint);
-  font-family: var(--font-mono);
-  font-size: 10px;
+.gh-month { fill: var(--fg-faint); font-family: var(--font-mono); font-size: 10px; }
+
+.gh-tip {
+  position: absolute; z-index: 5; pointer-events: none; white-space: nowrap;
+  padding: .3rem .55rem; border-radius: 6px;
+  border: 1px solid var(--rule); background: var(--bg-sunk);
+  box-shadow: var(--shadow);
+  font-family: var(--font-mono); font-size: var(--t-2xs); color: var(--fg);
+  opacity: 0; transform: translateY(3px);
+  transition: opacity .16s var(--ease), transform .16s var(--ease);
+}
+.gh-tip.is-on { opacity: 1; transform: none; }
+
+.gh-legend {
+  display: flex; align-items: center; gap: .3rem; margin: .7rem 0 0;
+  font-family: var(--font-mono); font-size: var(--t-2xs); color: var(--fg-faint);
+}
+.gh-legend i { width: 11px; height: 11px; border-radius: 2px; border: .5px solid var(--rule); }
+.gh-legend i[data-level="0"] { background: var(--bg-sunk); }
+.gh-legend i[data-level="1"] { background: rgba(var(--accent-rgb), .28); }
+.gh-legend i[data-level="2"] { background: rgba(var(--accent-rgb), .5); }
+.gh-legend i[data-level="3"] { background: rgba(var(--accent-rgb), .74); }
+.gh-legend i[data-level="4"] { background: rgb(var(--accent-rgb)); }
+
+.gh-repos {
+  list-style: none; padding: 0;
+  margin: 1.75rem 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: .75rem;
+}
+.gh-repo {
+  background: var(--bg); border: 1px solid var(--rule); border-radius: 10px;
+  padding: .9rem 1rem;
+  transition: background .25s var(--ease), border-color .25s var(--ease);
+}
+.gh-repo:hover { background: var(--bg-sunk); border-color: var(--fg-faint); }
+.gh-repo-name {
+  font-family: var(--font-mono); font-size: var(--t-sm); color: var(--accent);
+  text-decoration: none; border-bottom: 1px solid transparent;
+  transition: border-color .2s var(--ease);
+}
+.gh-repo-name:hover { border-bottom-color: currentColor; }
+.gh-repo-desc { margin: .45rem 0 0; font-size: var(--t-sm); line-height: 1.45; color: var(--fg-muted); }
+.gh-repo-meta {
+  display: flex; flex-wrap: wrap; gap: .8rem; margin: .55rem 0 0;
+  font-family: var(--font-mono); font-size: var(--t-2xs); color: var(--fg-faint);
 }
 
-/* Squares sweep in column by column (delay set per-rect in github.js).
-   transform-box makes the SVG rect scale about its own centre. */
+/* ---- About / Contact ---- */
+
+.prose { max-width: var(--measure); }
+.prose p { margin: 0 0 1.2rem; color: var(--fg-muted); font-size: var(--t-md); line-height: 1.65; }
+.prose p:last-child { margin-bottom: 0; }
+
+.links-list { list-style: none; margin: 1.5rem 0 0; padding: 0; max-width: 32rem; }
+.links-list li { border-top: 1px solid var(--rule); position: relative; overflow: hidden; }
+.links-list li:last-of-type { border-bottom: 1px solid var(--rule); }
+.links-list a {
+  display: block; padding: .85rem 0; text-decoration: none; color: var(--fg);
+  transition: color .25s var(--ease), padding-left .25s var(--ease);
+}
+.links-list a:hover { color: var(--accent); padding-left: .6rem; }
+.links-list li::after {
+  content: ""; position: absolute; left: 0; bottom: 0; width: 100%; height: 1px;
+  background: var(--accent); transform: scaleX(0); transform-origin: 0 50%;
+  transition: transform .45s var(--ease);
+}
+.links-list li:hover::after { transform: scaleX(1); }
+
+.links-list li.with-copy { display: flex; align-items: center; gap: 1rem; }
+.links-list li.with-copy a { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.copy {
+  flex: none; padding: .25rem .6rem;
+  border: 1px solid var(--rule); border-radius: 999px;
+  background: transparent; color: var(--fg-muted);
+  font-family: var(--font-mono); font-size: var(--t-2xs);
+  letter-spacing: .04em; text-transform: uppercase; cursor: pointer;
+  transition: color .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease);
+}
+.copy:hover { color: var(--accent); border-color: var(--accent); }
+.copy.is-done { color: var(--bg); background: var(--accent); border-color: var(--accent); }
+
+.foot { margin: 2.5rem 0 0; font-size: var(--t-xs); color: var(--fg-faint); }
+
+/* ============================================================
+   Motion
+   .js-motion is added by motion.js only when motion is allowed, so
+   without JS (or with reduce-motion on) nothing is ever hidden.
+   ============================================================ */
+
+.js-motion .anim {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity .7s var(--ease), transform .7s var(--ease);
+  transition-delay: calc(var(--d, 0) * 90ms);
+}
+.js-motion .panel.is-live .anim { opacity: 1; transform: none; }
+
+/* Headline characters rise out of the mask, staggered. */
+.js-motion .hero h1 .ch {
+  opacity: 0;
+  transform: translateY(92%) rotate(5deg);
+  transition: opacity .5s var(--ease), transform .7s var(--ease);
+  transition-delay: calc(var(--i, 0) * 34ms + 180ms);
+}
+.js-motion .hero.is-live h1 .ch { opacity: 1; transform: none; }
+.js-motion .hero h1 .split:not(.is-split) { opacity: 1; }
+
+/* Heat-map squares sweep in column by column (per-rect delay from github.js),
+   repo cards stagger behind them. */
 .js-motion .gh-graph rect {
   opacity: 0;
   transform: scale(.35);
@@ -683,72 +522,6 @@ a:hover .arw { transform: translate(2px, -2px); }
 }
 .js-motion .gh-graph.gh-lit rect { opacity: 1; transform: none; }
 
-.gh-count { font-variant-numeric: tabular-nums; color: var(--fg); font-weight: 600; }
-
-/* Tooltip. Positioned by github.js relative to .gh-graph-wrap. */
-.gh-graph-wrap { position: relative; }
-.gh-tip {
-  position: absolute;
-  z-index: 5;
-  pointer-events: none;
-  white-space: nowrap;
-  padding: .3rem .55rem;
-  border-radius: 6px;
-  border: 1px solid var(--rule);
-  background: var(--bg-sunk);
-  box-shadow: var(--shadow);
-  font-family: var(--font-mono);
-  font-size: var(--t-2xs);
-  color: var(--fg);
-  opacity: 0;
-  transform: translateY(3px);
-  transition: opacity .16s var(--ease), transform .16s var(--ease);
-}
-.gh-tip.is-on { opacity: 1; transform: none; }
-
-.gh-legend {
-  display: flex;
-  align-items: center;
-  gap: .3rem;
-  margin: .7rem 0 0;
-  font-family: var(--font-mono);
-  font-size: var(--t-2xs);
-  color: var(--fg-faint);
-}
-.gh-legend i {
-  width: 11px;
-  height: 11px;
-  border-radius: 2px;
-  border: .5px solid var(--rule);
-}
-.gh-legend i[data-level="0"] { background: var(--bg-sunk); }
-.gh-legend i[data-level="1"] { background: rgba(var(--accent-rgb), .28); }
-.gh-legend i[data-level="2"] { background: rgba(var(--accent-rgb), .50); }
-.gh-legend i[data-level="3"] { background: rgba(var(--accent-rgb), .74); }
-.gh-legend i[data-level="4"] { background: rgb(var(--accent-rgb)); }
-.gh-legend span:first-child { margin-right: .2rem; }
-.gh-legend span:last-child  { margin-left: .2rem; }
-
-/* Separate bordered cards rather than a shared grid with hairline gaps —
-   an odd repo count would otherwise leave a filled empty cell in the last row. */
-.gh-repos {
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-  gap: .75rem;
-  margin: 2.25rem 0 0;
-  padding: 0;
-}
-.gh-repo {
-  background: var(--bg);
-  border: 1px solid var(--rule);
-  border-radius: 10px;
-  padding: 1rem 1.1rem;
-  transition: background .25s var(--ease), border-color .25s var(--ease);
-}
-.gh-repo:hover { background: var(--bg-sunk); border-color: var(--fg-faint); }
-
-/* Cards stagger in behind the graph (delay set per-card in github.js). */
 .js-motion .gh-repo {
   opacity: 0;
   transform: translateY(12px);
@@ -757,235 +530,83 @@ a:hover .arw { transform: translate(2px, -2px); }
 }
 .js-motion .gh-lit-repos .gh-repo { opacity: 1; transform: none; }
 
-.gh-repo-name {
-  font-family: var(--font-mono);
-  font-size: var(--t-sm);
-  color: var(--accent);
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: border-color .2s var(--ease);
+/* The stat scales up as its panel arrives. */
+.js-motion .work .stat b {
+  transform: scale(.9);
+  transition: transform .8s var(--ease);
 }
-.gh-repo-name:hover { border-bottom-color: currentColor; }
+.js-motion .work.is-live .stat b { transform: none; }
 
-.gh-repo-desc {
-  margin: .5rem 0 0;
-  font-size: var(--t-sm);
-  line-height: 1.5;
-  color: var(--fg-muted);
-}
-.gh-repo-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .85rem;
-  margin: .65rem 0 0;
-  font-family: var(--font-mono);
-  font-size: var(--t-2xs);
-  color: var(--fg-faint);
-}
-
-.gh-more { margin: 1.5rem 0 0; font-size: var(--t-sm); }
-.gh-more a {
-  color: var(--accent);
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: border-color .2s var(--ease);
-}
-.gh-more a:hover { border-bottom-color: currentColor; }
-
-/* ============================================================
-   Contact links
-   ============================================================ */
-
-.links { list-style: none; margin: 1.25rem 0 0; padding: 0; }
-.links li { border-top: 1px solid var(--rule); }
-.links li:last-child { border-bottom: 1px solid var(--rule); }
-.links a {
-  display: block;
-  padding: .8rem 0;
-  text-decoration: none;
-  color: var(--fg);
-  transition: color .25s var(--ease), padding-left .25s var(--ease);
-}
-.links a:hover { color: var(--accent); padding-left: .6rem; }
-
-/* Email row: address on the left, copy button on the right. */
-.links li.with-copy {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-.links li.with-copy a { flex: 1; min-width: 0; overflow-wrap: anywhere; }
-
-.copy {
-  flex: none;
-  padding: .25rem .6rem;
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  background: transparent;
-  color: var(--fg-muted);
-  font-family: var(--font-mono);
-  font-size: var(--t-2xs);
-  letter-spacing: .04em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: color .2s var(--ease), border-color .2s var(--ease), background .2s var(--ease);
-}
-.copy:hover { color: var(--accent); border-color: var(--accent); }
-.copy.is-done {
-  color: var(--bg);
-  background: var(--accent);
-  border-color: var(--accent);
-}
-
-.links li { position: relative; overflow: hidden; }
-.links li::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 1px;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: 0 50%;
-  transition: transform .45s var(--ease);
-}
-.links li:hover::after { transform: scaleX(1); }
-
-/* LinkedIn badge. LinkedIn injects a fixed-size iframe here, so the container
-   just reserves room and keeps it from widening the page. The fallback link
-   inside is styled to match the contact list above. */
-.li-badge { margin-top: 1.75rem; max-width: 100%; overflow-x: auto; }
-.li-badge .badge-base { max-width: 100%; }
-.li-badge iframe { max-width: 100% !important; }
-.li-badge .LI-simple-link {
-  display: inline-block;
-  color: var(--accent);
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: border-color .2s var(--ease);
-}
-.li-badge .LI-simple-link:hover { border-bottom-color: currentColor; }
-/* Once LinkedIn's iframe is in, its fallback link is a duplicate — hide it.
-   Scoped to :has(iframe) so a blocked or failed script still leaves the link. */
-.li-badge:has(iframe) .LI-simple-link { display: none; }
-
-/* ============================================================
-   Footer
-   ============================================================ */
-
-.site-footer {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: .5rem;
-  max-width: var(--page);
-  margin-inline: auto;
-  padding: 2rem var(--gutter) 3rem;
-  border-top: 1px solid var(--rule);
-  font-size: var(--t-xs);
-  color: var(--fg-faint);
-}
-.site-footer p { margin: 0; }
-.site-footer a { text-decoration: none; transition: color .2s var(--ease); }
-.site-footer a:hover { color: var(--accent); }
-
-/* ============================================================
-   Reveal on scroll
-   The .js-motion class is added by js/motion.js only when motion is
-   allowed — without it everything is visible by default, so the page
-   still works with JS disabled or reduced motion on.
-   ============================================================ */
-
-.js-motion .project.reveal {
-  transform: translateY(26px) scale(.985);
-  transform-origin: 0 50%;
-}
-.js-motion .project.reveal.is-visible { transform: none; }
-
-.js-motion .reveal {
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity .7s var(--ease), transform .7s var(--ease);
-  transition-delay: var(--d, 0ms);
-  will-change: opacity, transform;
-}
-.js-motion .reveal.is-visible {
-  opacity: 1;
-  transform: none;
-  will-change: auto;
-}
-
-/* Headline. motion.js splits each line into .word > .ch spans; without JS the
-   line is plain text and simply sits there, styled but unanimated. */
-.hero h1 .word { display: inline-block; white-space: nowrap; }
-.hero h1 .ch   { display: inline-block; will-change: transform, opacity; }
-
-.js-motion .reveal.as-line { opacity: 1; }
-.js-motion .reveal.as-line .ch {
-  opacity: 0;
-  transform: translateY(88%) rotate(4deg);
-  transition: opacity .5s var(--ease), transform .68s var(--ease);
-  transition-delay: calc(var(--d, 0ms) + var(--i, 0) * 18ms);
-}
-.js-motion .reveal.as-line.is-visible .ch {
-  opacity: 1;
-  transform: none;
-}
-/* No JS split (or reduced motion): nothing may be left invisible. */
-.js-motion .reveal.as-line:not(.is-split) { opacity: 1; }
-
-/* Freeze transitions while the palette swaps. The circular wipe below is the
-   transition; letting every bordered element also interpolate its own colours
-   makes the change muddy, and those per-element transitions can stick
-   mid-interpolation and leave the wrong colour behind. */
+/* Theme swaps apply instantly — per-element colour transitions muddy the
+   change and can stick mid-interpolation. */
 .theme-switching *,
 .theme-switching *::before,
 .theme-switching *::after { transition: none !important; }
-
-/* ============================================================
-   Theme switch — circular wipe out of the toggle button.
-   Falls back to the browser's default crossfade, and to a plain
-   instant swap where View Transitions aren't supported.
-   ============================================================ */
 
 @keyframes vt-wipe {
   from { clip-path: circle(0 at var(--vt-x, 50%) var(--vt-y, 50%)); }
   to   { clip-path: circle(var(--vt-r, 150vmax) at var(--vt-x, 50%) var(--vt-y, 50%)); }
 }
-
 ::view-transition-old(root) { animation: none; z-index: 0; }
-::view-transition-new(root) {
-  animation: vt-wipe .55s var(--ease);
-  z-index: 1;
-}
+::view-transition-new(root) { animation: vt-wipe .55s var(--ease); z-index: 1; }
 
 /* ============================================================
-   Small screens
+   Narrow screens
    ============================================================ */
 
-@media (max-width: 40rem) {
-  /* Keep the header on one line — wrapped, it ate a third of the screen. */
-  .header-inner { padding-block: 1.1rem; flex-wrap: nowrap; }
-  .wordmark { font-size: 1.15rem; white-space: nowrap; }
-  .site-header nav { gap: .9rem; font-size: var(--t-xs); }
-  #theme-toggle { width: 1.75rem; height: 1.75rem; }
-  #theme-toggle svg { width: 15px; height: 15px; }
+/* Short viewports — laptops at 640-760px tall. Panels are one screen each, so
+   anything that doesn't fit is content the visitor has to hunt for. Tighten
+   the frame rather than let it spill. */
+@media (max-height: 47rem) {
+  .panel { padding-top: calc(var(--bar-h) + .85rem); padding-bottom: 2rem; }
+  .panel h2 { font-size: clamp(1.75rem, 4vw, 2.5rem); }
+  .status { margin-bottom: 1rem; }
+  .hero h1 { margin-bottom: 1rem; }
+  .lede { margin-bottom: 1.25rem; font-size: var(--t-base); }
+  .detail p { margin-bottom: .6rem; }
+  .keyline { margin-top: .8rem !important; }
+  .tags { margin-bottom: 1rem; }
+  .stat > span { margin-top: .5rem; }
+  .prose p { font-size: var(--t-base); margin-bottom: .9rem; }
+  .links-list a { padding: .6rem 0; }
+  .foot { margin-top: 1.5rem; }
+  .gh-repos { margin-top: 1rem; gap: .5rem; }
+  .cue { display: none; }
 }
 
-/* Narrowest phones: the full name plus four controls no longer fit on one
-   row, and nowrap would push the toggle off the edge. Drop to first name. */
+@media (max-width: 60rem) {
+  .work .wrap { grid-template-columns: 1fr; gap: 1.75rem; }
+  .stat > span { max-width: none; }
+}
+
+@media (max-width: 40rem) {
+  :root { --bar-h: 3.75rem; }
+  /* Stacked, the work panels run taller than the screen — same tightening as
+     the short-viewport case, since the cause is identical: content that
+     doesn't fit the one screen it's supposed to occupy. */
+  .panel { padding-top: calc(var(--bar-h) + 1rem); padding-bottom: 2rem; }
+  .panel h2 { font-size: clamp(1.65rem, 7vw, 2.25rem); }
+  .status { margin-bottom: 1rem; }
+  .hero h1 { margin-bottom: 1rem; }
+  .lede { margin-bottom: 1.25rem; font-size: var(--t-base); }
+  .detail p { margin-bottom: .6rem; }
+  .keyline { margin-top: .8rem !important; padding-left: .8rem; }
+  .tags { margin-bottom: .9rem; }
+  .role { margin-bottom: .7rem; }
+  .stat > span { margin-top: .4rem; }
+  .prose p { font-size: var(--t-base); margin-bottom: .9rem; }
+  .links-list a { padding: .65rem 0; }
+  .links-list { margin-top: 1rem; }
+  .foot { margin-top: 1.5rem; }
+  .gh-repos { margin-top: 1rem; gap: .5rem; grid-template-columns: 1fr; }
+  .idx { margin-bottom: .6rem; }
+  .rail { gap: .6rem; right: .6rem; }
+  .rail button { width: 1.1rem; height: 1.1rem; }
+  .rail span { width: 6px; height: 6px; }
+  .cue { display: none; }          /* the rail already says there's more */
+  .links-list { max-width: none; }
+}
+
 @media (max-width: 23rem) {
   .wordmark .surname { display: none; }
-  .site-header nav { gap: .75rem; }
-
-  .project { grid-template-columns: 1fr; gap: 0; }
-  .project::before,
-  .project::after { display: none; }   /* no hover state to speak of on touch */
-  .project-index { padding: 0 0 .35rem; }
-  .project-detail { grid-template-columns: 1fr; gap: .15rem; }
-  .project-detail dt { padding-top: .6rem; }
-  .project-detail dt:first-child { padding-top: 0; }
 }

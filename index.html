@@ -6,7 +6,6 @@
 <title>Pranav Hirawat</title>
 <meta name="description" content="Pranav Hirawat — I build backend systems that make security decisions. Selected work in Python, Go and Swift.">
 
-<!-- Open Graph: what shows up when the link is shared -->
 <meta property="og:title" content="Pranav Hirawat">
 <meta property="og:description" content="I build backend systems that make security decisions. Selected work in Python, Go and Swift.">
 <meta property="og:type" content="website">
@@ -20,307 +19,213 @@
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <!-- Bump ?v= whenever css/js changes: GitHub Pages caches assets for ~10
      minutes, so without this a returning visitor can get a stale mix. -->
-<link rel="stylesheet" href="css/style.css?v=5">
-<script src="js/theme.js?v=5"></script>
+<link rel="stylesheet" href="css/style.css?v=9">
+<script src="js/theme.js?v=9"></script>
 </head>
 <body>
 
-<a class="skip" href="#main">Skip to content</a>
-
-<!-- Fine film grain over the whole page. Purely decorative. -->
+<a class="skip" href="#p-hero">Skip to content</a>
 <div class="grain" aria-hidden="true"></div>
 
-<header class="site-header" id="site-header">
-  <div class="header-inner">
-    <a class="wordmark" href="./">Pranav<span class="surname">&nbsp;Hirawat</span></a>
-    <nav aria-label="Primary">
-      <span class="nav-pill" aria-hidden="true"></span>
-      <a href="#work">Work</a>
-      <a href="#github">GitHub</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-      <button id="theme-toggle" type="button" aria-label="Switch color theme" title="Switch color theme">
-        <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18">
-          <path class="sun" d="M12 4V2m0 20v-2m8-8h2M2 12h2m13.66-5.66 1.41-1.41M4.93 19.07l1.41-1.41m11.32 0 1.41 1.41M4.93 4.93l1.41 1.41"/>
-          <circle class="sun" cx="12" cy="12" r="4"/>
-          <path class="moon" d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/>
-        </svg>
-      </button>
-    </nav>
-  </div>
-  <div class="progress" id="progress" aria-hidden="true"></div>
+<header class="bar">
+  <a class="wordmark" href="./">Pranav<span class="surname">&nbsp;Hirawat</span></a>
+  <button id="theme-toggle" type="button" aria-label="Switch color theme" title="Switch color theme">
+    <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18">
+      <path class="sun" d="M12 4V2m0 20v-2m8-8h2M2 12h2m13.66-5.66 1.41-1.41M4.93 19.07l1.41-1.41m11.32 0 1.41 1.41M4.93 4.93l1.41 1.41"/>
+      <circle class="sun" cx="12" cy="12" r="4"/>
+      <path class="moon" d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/>
+    </svg>
+  </button>
 </header>
 
-<main id="main">
+<!-- Panel rail. Buttons, not links: they move the scroller rather than
+     navigating, and JS keeps the pressed state in sync with the panel. -->
+<nav class="rail" aria-label="Sections">
+  <button type="button" data-to="p-hero"    aria-label="Intro"><span></span></button>
+  <button type="button" data-to="p-gateway" aria-label="Intelligent API Security Gateway"><span></span></button>
+  <button type="button" data-to="p-review"  aria-label="Fake Review Detector"><span></span></button>
+  <button type="button" data-to="p-helivor" aria-label="Helivor"><span></span></button>
+  <button type="button" data-to="p-github"  aria-label="GitHub activity"><span></span></button>
+  <button type="button" data-to="p-about"   aria-label="About"><span></span></button>
+  <button type="button" data-to="p-contact" aria-label="Contact"><span></span></button>
+</nav>
 
-  <!-- ───────────────────────── Hero ───────────────────────── -->
-  <section class="hero">
-    <div class="hero-glow" aria-hidden="true"><i></i></div>
+<main class="panels">
 
-    <!-- TODO: delete this pill if you're not looking for work. -->
-    <p class="status reveal" style="--d:0ms"><span class="dot" aria-hidden="true"></span> Available for new work</p>
-
-    <!-- Each line sits in an overflow-hidden mask so it can slide up into view. -->
-    <h1>
-      <span class="line"><span class="reveal as-line" style="--d:80ms">I build <em>things</em> that</span></span>
-      <span class="line"><span class="reveal as-line" style="--d:200ms">solve real problems.</span></span>
-    </h1>
-
-    <p class="lede reveal" style="--d:240ms">
-      BCA student at PES University. I build backend systems that make
-      decisions on their own — most recently an agentic control plane that turns
-      scattered attack evidence into named campaigns and writes the policy a
-      gateway enforces.
-    </p>
-
-    <p class="hero-actions reveal" style="--d:320ms">
-      <a class="btn" href="#work">See the work</a>
-      <a class="btn ghost" href="#contact">Get in touch</a>
-    </p>
+  <!-- ═══════════════ 0 · Hero ═══════════════ -->
+  <section class="panel hero" id="p-hero">
+    <div class="glow" aria-hidden="true"><i></i></div>
+    <div class="wrap">
+      <p class="status anim" data-d="0"><span class="dot" aria-hidden="true"></span> Available for new work</p>
+      <h1 class="anim" data-d="1">
+        <span class="line"><span class="split">Pranav</span></span>
+        <span class="line"><span class="split">Hirawat</span></span>
+      </h1>
+      <p class="lede anim" data-d="2">
+        BCA student at PES University. I build backend systems that make decisions
+        on their own — most recently an agentic control plane that turns scattered
+        attack evidence into named campaigns and writes the policy a gateway enforces.
+      </p>
+      <p class="cta anim" data-d="3">
+        <a class="btn" href="#p-gateway">See the work</a>
+        <a class="btn ghost" href="#p-contact">Get in touch</a>
+      </p>
+    </div>
+    <p class="cue" aria-hidden="true">scroll <span>↓</span></p>
   </section>
 
-  <!-- ───────────────────────── Work ───────────────────────── -->
-  <section id="work" class="section">
-    <h2 class="section-title reveal"><span class="num">01</span> Selected work</h2>
-
-    <ol class="projects">
-
-      <li class="project reveal">
-        <div class="project-index" aria-hidden="true">01</div>
-        <div class="project-body">
-          <h3 class="project-title">Intelligent API Security Gateway</h3>
-          <p class="project-meta">
-            <span class="tag">Python</span>
-            <span class="tag">Redis</span>
-            <span class="tag">Go</span>
-            <span class="tag">2026</span>
-          </p>
-          <p class="project-role">Four-person project — I built and own the Python control plane.</p>
-          <dl class="project-detail">
-            <dt>Problem</dt>
-            <dd>
-              A gateway can block a bad IP, but attackers rotate addresses. Judging each
-              request in isolation means the same actor is re-detected forever and never
-              actually stopped — six IPs grinding one login form read as six unrelated
-              incidents instead of one credential-stuffing campaign.
-            </dd>
-            <dt>Built</dt>
-            <dd>
-              The agentic half of the system: a control plane that wakes every 30 seconds to
-              correlate, decide and write policy, while a Go proxy does the enforcing.
-              Clustering over shared traits — endpoint, User-Agent, subnet, overlapping
-              timing — groups scattered evidence into campaigns that survive an attacker
-              changing every address. Severity and confidence then map onto an action ladder
-              (monitor → throttle → temp block → escalate), written to Redis with a TTL so
-              every decision expires on its own rather than needing to be revoked.
-            </dd>
-            <dt>Design</dt>
-            <dd>
-              The LLM narrates incidents but runs strictly after enforcement, so a
-              prompt-injected summary can mislead a reader and still never unblock an
-              attacker. It's optional too — a null provider means the system runs with no
-              model at all. The rails that matter (never action reserved ranges, never write
-              a policy without an expiry, cap IPs per cycle, honour dry-run) live together in
-              the one file that can influence the gateway.
-            </dd>
-            <dt>Outcome</dt>
-            <dd>
-              <span class="tally" data-to="3925" data-comma>3,925</span> lines of source
-              against <span class="tally" data-to="3289" data-comma>3,289</span> lines of
-              tests: <span class="tally" data-to="249">249</span> tests at a 0.84:1
-              ratio, testing properties rather than paths — including that clean traffic
-              produces zero detections. One runtime dependency; the rest is standard library.
-              Kill the control plane and the gateway keeps serving traffic unchanged — it
-              just stops getting smarter.
-            </dd>
-          </dl>
-          <!-- TODO: the repo is currently private, so there's no Code link to give.
-               Add one here if it's ever made public:
-               <a href="...">Code <span class="arw" aria-hidden="true">↗</span></a> -->
-        </div>
-      </li>
-
-      <li class="project reveal">
-        <div class="project-index" aria-hidden="true">02</div>
-        <div class="project-body">
-          <h3 class="project-title">Fake Review Detector</h3>
-          <p class="project-meta">
-            <span class="tag">Python</span>
-            <span class="tag">NLP</span>
-            <span class="tag">scikit-learn</span>
-            <span class="tag">Streamlit</span>
-            <span class="tag">2026</span>
-          </p>
-          <dl class="project-detail">
-            <dt>Problem</dt>
-            <dd>
-              Computer-generated product reviews read as fluent and confident as real ones,
-              which is exactly what makes them hard to spot by eye and easy to buy in bulk.
-            </dd>
-            <dt>Built</dt>
-            <dd>
-              A text classifier over a cleaned, stopword-stripped, TF-IDF corpus, comparing
-              logistic regression against naive Bayes, then wrapped in a Streamlit app that
-              scores a pasted review in real time.
-            </dd>
-            <dt>Outcome</dt>
-            <dd>
-              ~<span class="tally" data-to="89">89</span>% accuracy, read through a confusion matrix and precision/recall/F1 rather
-              than accuracy alone — on a task where a false accusation costs more than a
-              miss.
-            </dd>
-          </dl>
-          <p class="project-links">
-            <a href="https://fake-review-detector-pranav.streamlit.app/">Live <span class="arw" aria-hidden="true">↗</span></a>
-            <a href="https://github.com/Pranav-Hirawat/Fake-review-detector">Code <span class="arw" aria-hidden="true">↗</span></a>
-          </p>
-        </div>
-      </li>
-
-      <li class="project reveal">
-        <div class="project-index" aria-hidden="true">03</div>
-        <div class="project-body">
-          <h3 class="project-title">Helivor</h3>
-          <p class="project-meta">
-            <span class="tag">Swift</span>
-            <span class="tag">SwiftUI</span>
-            <span class="tag">On-device AI</span>
-            <span class="tag">2025</span>
-          </p>
-          <dl class="project-detail">
-            <dt>Problem</dt>
-            <dd>
-              Disasters take out connectivity precisely when people most need guidance, so
-              anything that depends on a round trip to a server is useless at the moment it
-              matters.
-            </dd>
-            <dt>Built</dt>
-            <dd>
-              An iOS app that keeps its intelligence on the device — local weather conditions
-              and AI-assisted guidance for the area you're actually in, without waiting on a
-              network that may not be there.
-            </dd>
-            <dt>Outcome</dt>
-            <dd>
-              Shipped as a working SwiftUI app; the code is public.
-            </dd>
-          </dl>
-          <p class="project-links">
-            <a href="https://github.com/Pranav-Hirawat/disastermanagment">Code <span class="arw" aria-hidden="true">↗</span></a>
-          </p>
-        </div>
-      </li>
-
-      <!-- Copy a <li class="project reveal"> block to add another. Three to six
-           is the sweet spot — past that, cut the weakest ones. -->
-
-    </ol>
-  </section>
-
-  <!-- ───────────────────────── GitHub ───────────────────────── -->
-  <!-- Filled in by js/github.js from the public GitHub API. If either request
-       fails the section removes itself, so a rate limit or an outage never
-       leaves a broken panel on the page. -->
-  <section id="github" class="section" hidden>
-    <h2 class="section-title reveal"><span class="num">02</span> GitHub</h2>
-
-    <div class="gh-graph-wrap">
-      <p class="gh-total" id="gh-total"></p>
-      <div class="gh-scroll">
-        <svg id="gh-graph" class="gh-graph" role="img" aria-label="Contribution activity over the last year"></svg>
+  <!-- ═══════════════ 1 · Gateway ═══════════════ -->
+  <section class="panel work" id="p-gateway">
+    <div class="wrap">
+      <div class="stat anim" data-d="0">
+        <b class="tally" data-to="249">249</b>
+        <span>tests against 3,925 lines</span>
       </div>
-      <p class="gh-legend">
-        <span>Less</span>
-        <i data-level="0"></i><i data-level="1"></i><i data-level="2"></i><i data-level="3"></i><i data-level="4"></i>
-        <span>More</span>
-      </p>
-    </div>
-
-    <ul class="gh-repos" id="gh-repos"></ul>
-
-    <p class="gh-more">
-      <a href="https://github.com/Pranav-Hirawat">All repositories <span class="arw" aria-hidden="true">↗</span></a>
-    </p>
-  </section>
-
-  <!-- ───────────────────────── About ───────────────────────── -->
-  <section id="about" class="section">
-    <h2 class="section-title reveal"><span class="num">03</span> About</h2>
-    <div class="prose reveal">
-      <p>
-        I'm drawn to the part of a system that has to decide something under
-        uncertainty — where the interesting question isn't whether the code runs
-        but whether the call it made was the right one, and what happens when it
-        wasn't.
-      </p>
-      <p>
-        That's most of what the gateway project became. Blocking a bad IP is
-        easy; recognising that six addresses are one attacker, choosing an action
-        proportionate to how sure you are, and making sure a language model can
-        narrate the incident without ever being able to influence it — that's the
-        actual work. I've since been pulling the same thread through smaller
-        things: classifiers where a false accusation costs more than a miss, and
-        an iOS app that has to stay useful when the network doesn't.
-      </p>
+      <div class="body">
+        <p class="idx anim" data-d="1">01 — Selected work</p>
+        <h2 class="anim" data-d="2">Intelligent API Security Gateway</h2>
+        <p class="role anim" data-d="3">Four-person project — I built and own the Python control plane.</p>
+        <p class="tags anim" data-d="4">
+          <span>Python</span><span>Redis</span><span>Go</span><span>Ollama</span><span>2026</span>
+        </p>
+        <div class="detail anim" data-d="5">
+          <p><b>Problem.</b> A gateway can block a bad IP, but attackers rotate addresses —
+            six IPs grinding one login form read as six incidents instead of one campaign.</p>
+          <p><b>Built.</b> A control plane that wakes every 30 seconds to correlate evidence
+            into campaigns, then maps severity and confidence onto an action ladder written
+            to Redis with a TTL, so decisions expire on their own.</p>
+          <p class="keyline"><b>The decision I'd defend.</b> The LLM narrates incidents but runs
+            strictly <em>after</em> enforcement — a prompt-injected summary can mislead a reader
+            and still never unblock an attacker.</p>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- ───────────────────────── Contact ───────────────────────── -->
-  <section id="contact" class="section">
-    <h2 class="section-title reveal"><span class="num">04</span> Contact</h2>
-    <div class="prose reveal">
-      <p>Best way to reach me is email. I read everything.</p>
-      <ul class="links">
+  <!-- ═══════════════ 2 · Review detector ═══════════════ -->
+  <section class="panel work" id="p-review">
+    <div class="wrap">
+      <div class="stat anim" data-d="0">
+        <b>~<span class="tally" data-to="89">89</span>%</b>
+        <span>accuracy, read past accuracy</span>
+      </div>
+      <div class="body">
+        <p class="idx anim" data-d="1">02 — Selected work</p>
+        <h2 class="anim" data-d="2">Fake Review Detector</h2>
+        <p class="tags anim" data-d="4">
+          <span>Python</span><span>NLP</span><span>scikit-learn</span><span>Streamlit</span><span>2026</span>
+        </p>
+        <div class="detail anim" data-d="5">
+          <p><b>Problem.</b> Computer-generated reviews read as fluently as real ones, which is
+            what makes them hard to spot by eye and easy to buy in bulk.</p>
+          <p><b>Built.</b> A classifier over a cleaned, stopword-stripped, TF-IDF corpus,
+            comparing logistic regression against naive Bayes, deployed as a Streamlit app
+            that scores a pasted review live.</p>
+          <p class="keyline"><b>Outcome.</b> Evaluated on a confusion matrix and precision/recall/F1
+            rather than accuracy alone — on a task where a false accusation costs more than a miss.</p>
+        </div>
+        <p class="links anim" data-d="6">
+          <a href="https://fake-review-detector-pranav.streamlit.app/">Live demo <span class="arw" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/Pranav-Hirawat/Fake-review-detector">Code <span class="arw" aria-hidden="true">↗</span></a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 3 · Helivor ═══════════════ -->
+  <section class="panel work" id="p-helivor">
+    <div class="wrap">
+      <div class="stat anim" data-d="0">
+        <b>On&#8209;device</b>
+        <span>no network round trip</span>
+      </div>
+      <div class="body">
+        <p class="idx anim" data-d="1">03 — Selected work</p>
+        <h2 class="anim" data-d="2">Helivor</h2>
+        <p class="tags anim" data-d="4">
+          <span>Swift</span><span>SwiftUI</span><span>On-device AI</span><span>2025</span>
+        </p>
+        <div class="detail anim" data-d="5">
+          <p><b>Problem.</b> Disasters take out connectivity precisely when people most need
+            guidance, so anything depending on a server round trip is useless at the moment
+            it matters.</p>
+          <p class="keyline"><b>Built.</b> An iOS app that keeps its intelligence on the device —
+            local conditions and AI-assisted guidance for where you actually are, without
+            waiting on a network that may not be there.</p>
+        </div>
+        <p class="links anim" data-d="6">
+          <a href="https://github.com/Pranav-Hirawat/disastermanagment">Code <span class="arw" aria-hidden="true">↗</span></a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 4 · GitHub ═══════════════ -->
+  <section class="panel gh" id="p-github" hidden>
+    <div class="wrap">
+      <p class="idx anim" data-d="0">04 — Activity</p>
+      <h2 class="anim" data-d="1">GitHub</h2>
+      <div class="gh-graph-wrap anim" data-d="2">
+        <p class="gh-total" id="gh-total"></p>
+        <div class="gh-scroll">
+          <svg id="gh-graph" class="gh-graph" role="img" aria-label="Contribution activity over the last year"></svg>
+        </div>
+        <p class="gh-legend">
+          <span>Less</span>
+          <i data-level="0"></i><i data-level="1"></i><i data-level="2"></i><i data-level="3"></i><i data-level="4"></i>
+          <span>More</span>
+        </p>
+      </div>
+      <ul class="gh-repos anim" id="gh-repos" data-d="3"></ul>
+      <p class="links anim" data-d="4">
+        <a href="https://github.com/Pranav-Hirawat">All repositories <span class="arw" aria-hidden="true">↗</span></a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 5 · About ═══════════════ -->
+  <section class="panel about" id="p-about">
+    <div class="wrap">
+      <p class="idx anim" data-d="0">05 — About</p>
+      <div class="prose">
+        <p class="anim" data-d="1">I'm drawn to the part of a system that has to decide something
+          under uncertainty — where the interesting question isn't whether the code runs but
+          whether the call it made was the right one, and what happens when it wasn't.</p>
+        <p class="anim" data-d="2">That's most of what the gateway project became. Blocking a bad IP
+          is easy; recognising that six addresses are one attacker, choosing an action
+          proportionate to how sure you are, and making sure a language model can narrate the
+          incident without ever being able to influence it — that's the actual work. I've since
+          been pulling the same thread through smaller things: classifiers where a false
+          accusation costs more than a miss, and an iOS app that has to stay useful when the
+          network doesn't.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 6 · Contact ═══════════════ -->
+  <section class="panel contact" id="p-contact">
+    <div class="wrap">
+      <p class="idx anim" data-d="0">06 — Contact</p>
+      <h2 class="anim" data-d="1">Let's talk.</h2>
+      <p class="lede anim" data-d="2">Best way to reach me is email. I read everything.</p>
+      <ul class="links-list anim" data-d="3">
         <li class="with-copy">
           <a href="mailto:pranavhirawat2005@gmail.com">pranavhirawat2005@gmail.com</a>
           <button type="button" class="copy" data-copy="pranavhirawat2005@gmail.com">Copy</button>
         </li>
         <li><a href="tel:+917619592412">+91 76195 92412</a></li>
         <li><a href="https://github.com/Pranav-Hirawat">GitHub <span class="arw" aria-hidden="true">↗</span></a></li>
+        <li><a href="https://www.linkedin.com/in/pranavhirawat/">LinkedIn <span class="arw" aria-hidden="true">↗</span></a></li>
         <li><a href="assets/Pranav-Hirawat-Resume.pdf">Résumé (PDF) <span class="arw" aria-hidden="true">↗</span></a></li>
       </ul>
-
-      <!-- LinkedIn profile badge. The <a> inside is LinkedIn's own fallback: if
-           the script is blocked, fails, or the visitor runs a tracker blocker,
-           the link still renders and still works. -->
-      <div class="li-badge">
-        <div class="badge-base LI-profile-badge"
-             data-locale="en_US"
-             data-size="medium"
-             data-theme="dark"
-             data-type="VERTICAL"
-             data-vanity="pranavhirawat"
-             data-version="v1">
-          <a class="badge-base__link LI-simple-link"
-             href="https://www.linkedin.com/in/pranavhirawat/">LinkedIn — Pranav Hirawat ↗</a>
-        </div>
-      </div>
+      <p class="foot anim" data-d="4">© <span id="year">2026</span> Pranav Hirawat</p>
     </div>
   </section>
 
 </main>
 
-<footer class="site-footer">
-  <p>© <span id="year">2026</span> Pranav Hirawat</p>
-  <p><a href="#main">Back to top ↑</a></p>
-</footer>
-
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-<script>
-  /* LinkedIn renders the badge once, reading data-theme at load, so match it to
-     the theme in effect now. It cannot follow the toggle afterwards — the badge
-     is an iframe we don't control. */
-  (function () {
-    var explicit = document.documentElement.getAttribute('data-theme');
-    var dark = explicit
-      ? explicit === 'dark'
-      : window.matchMedia('(prefers-color-scheme: dark)').matches;
-    var badge = document.querySelector('.LI-profile-badge');
-    if (badge) badge.setAttribute('data-theme', dark ? 'dark' : 'light');
-  })();
-</script>
-<script src="https://platform.linkedin.com/badges/js/profile.js" async defer type="text/javascript"></script>
-<script src="js/github.js?v=5" defer></script>
-<script src="js/motion.js?v=5" defer></script>
+<script src="js/github.js?v=9" defer></script>
+<script src="js/motion.js?v=9" defer></script>
 </body>
 </html>

@@ -9,7 +9,7 @@
 (function () {
   var USER = 'Pranav-Hirawat';
 
-  var section = document.getElementById('github');
+  var section = document.getElementById('p-github');
   if (!section) return;
 
   var CELL = 11;    // square size in px
@@ -207,6 +207,15 @@
     svg.addEventListener('pointerleave', function () { tip.classList.remove('is-on'); });
   }
 
+  /* Remove the panel AND its rail dot together: a dot pointing at a panel
+     that no longer exists just scrolls nowhere. */
+  function dropSection(why) {
+    var dot = document.querySelector('.rail button[data-to="' + section.id + '"]');
+    if (dot) dot.remove();
+    section.remove();
+    if (window.console) console.info('GitHub section skipped:', why);
+  }
+
   /* ---- go ------------------------------------------------------------ */
 
   /* allSettled, not all: the two endpoints fail independently — GitHub's API
@@ -224,8 +233,7 @@
     var gotRepos = !!(repos && Array.isArray(repos) && repos.length);
 
     if (!gotGraph && !gotRepos) {
-      section.remove();
-      if (window.console) console.info('GitHub section skipped: both requests failed');
+      dropSection('both requests failed');
       return;
     }
 
