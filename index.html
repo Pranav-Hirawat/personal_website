@@ -19,8 +19,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <!-- Bump ?v= whenever css/js changes: GitHub Pages caches assets for ~10
      minutes, so without this a returning visitor can get a stale mix. -->
-<link rel="stylesheet" href="css/style.css?v=10">
-<script src="js/theme.js?v=10"></script>
+<link rel="stylesheet" href="css/style.css?v=11">
+<script src="js/theme.js?v=11"></script>
 </head>
 <body>
 
@@ -45,7 +45,6 @@
   <button type="button" data-to="p-gateway" aria-label="Intelligent API Security Gateway"><span></span></button>
   <button type="button" data-to="p-rag"     aria-label="RAG chatbot with web search"><span></span></button>
   <button type="button" data-to="p-review"  aria-label="Fake Review Detector"><span></span></button>
-  <button type="button" data-to="p-helivor" aria-label="Helivor"><span></span></button>
   <button type="button" data-to="p-github"  aria-label="GitHub activity"><span></span></button>
   <button type="button" data-to="p-about"   aria-label="About"><span></span></button>
   <button type="button" data-to="p-contact" aria-label="Contact"><span></span></button>
@@ -170,38 +169,10 @@
     </div>
   </section>
 
-  <!-- ═══════════════ 4 · Helivor ═══════════════ -->
-  <section class="panel work" id="p-helivor">
-    <div class="wrap">
-      <div class="stat anim" data-d="0">
-        <b class="word">On&#8209;device</b>
-        <span>no network round trip</span>
-      </div>
-      <div class="body">
-        <p class="idx anim" data-d="1">04 — Selected work</p>
-        <h2 class="anim" data-d="2">Helivor</h2>
-        <p class="tags anim" data-d="4">
-          <span>Swift</span><span>SwiftUI</span><span>On-device AI</span><span>2025</span>
-        </p>
-        <div class="detail anim" data-d="5">
-          <p><b>Problem.</b> Disasters take out connectivity precisely when people most need
-            guidance, so anything depending on a server round trip is useless at the moment
-            it matters.</p>
-          <p class="keyline"><b>Built.</b> An iOS app that keeps its intelligence on the device —
-            local conditions and AI-assisted guidance for where you actually are, without
-            waiting on a network that may not be there.</p>
-        </div>
-        <p class="links anim" data-d="6">
-          <a href="https://github.com/Pranav-Hirawat/disastermanagment">Code <span class="arw" aria-hidden="true">↗</span></a>
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════ 5 · GitHub ═══════════════ -->
+  <!-- ═══════════════ 4 · GitHub ═══════════════ -->
   <section class="panel gh" id="p-github" hidden>
     <div class="wrap">
-      <p class="idx anim" data-d="0">05 — Activity</p>
+      <p class="idx anim" data-d="0">04 — Activity</p>
       <h2 class="anim" data-d="1">GitHub</h2>
       <div class="gh-graph-wrap anim" data-d="2">
         <p class="gh-total" id="gh-total"></p>
@@ -221,10 +192,10 @@
     </div>
   </section>
 
-  <!-- ═══════════════ 6 · About ═══════════════ -->
+  <!-- ═══════════════ 5 · About ═══════════════ -->
   <section class="panel about" id="p-about">
     <div class="wrap">
-      <p class="idx anim" data-d="0">06 — About</p>
+      <p class="idx anim" data-d="0">05 — About</p>
       <div class="prose">
         <p class="anim" data-d="1">I'm drawn to the part of a system that has to decide something
           under uncertainty — where the interesting question isn't whether the code runs but
@@ -234,8 +205,7 @@
           proportionate to how sure you are, and making sure a language model can narrate the
           incident without ever being able to influence it — that's the actual work. The same
           thread runs through the smaller projects: a chatbot that has to say where an answer
-          came from, a classifier where a false accusation costs more than a miss, and an iOS
-          app that has to stay useful when the network doesn't.</p>
+          came from, and a classifier where a false accusation costs more than a miss.</p>
       </div>
 
       <dl class="facts anim" data-d="3">
@@ -255,10 +225,10 @@
     </div>
   </section>
 
-  <!-- ═══════════════ 7 · Contact ═══════════════ -->
+  <!-- ═══════════════ 6 · Contact ═══════════════ -->
   <section class="panel contact" id="p-contact">
     <div class="wrap">
-      <p class="idx anim" data-d="0">07 — Contact</p>
+      <p class="idx anim" data-d="0">06 — Contact</p>
       <h2 class="anim" data-d="1">Let's talk.</h2>
       <p class="lede anim" data-d="2">Best way to reach me is email. I read everything.</p>
       <ul class="links-list anim" data-d="3">
@@ -278,7 +248,7 @@
 </main>
 
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-<script src="js/github.js?v=10" defer></script>
-<script src="js/motion.js?v=10" defer></script>
+<script src="js/github.js?v=11" defer></script>
+<script src="js/motion.js?v=11" defer></script>
 </body>
 </html>
