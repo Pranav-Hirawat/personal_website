@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pranav Hirawat</title>
-<meta name="description" content="Pranav Hirawat — I build backend systems that make security decisions. Selected work in Python, Go and Swift.">
+<meta name="description" content="Pranav Hirawat — final-year BCA student at PES University. I build backend systems and AI applications in Python. Seeking a backend or AI engineering internship.">
 
 <meta property="og:title" content="Pranav Hirawat">
-<meta property="og:description" content="I build backend systems that make security decisions. Selected work in Python, Go and Swift.">
+<meta property="og:description" content="Final-year BCA student at PES University. I build backend systems and AI applications in Python.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://pranav-hirawat.github.io/personal_website/">
 <!-- TODO: add a 1200x630 preview image at assets/og.png, then uncomment:
@@ -19,8 +19,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <!-- Bump ?v= whenever css/js changes: GitHub Pages caches assets for ~10
      minutes, so without this a returning visitor can get a stale mix. -->
-<link rel="stylesheet" href="css/style.css?v=9">
-<script src="js/theme.js?v=9"></script>
+<link rel="stylesheet" href="css/style.css?v=10">
+<script src="js/theme.js?v=10"></script>
 </head>
 <body>
 
@@ -43,6 +43,7 @@
 <nav class="rail" aria-label="Sections">
   <button type="button" data-to="p-hero"    aria-label="Intro"><span></span></button>
   <button type="button" data-to="p-gateway" aria-label="Intelligent API Security Gateway"><span></span></button>
+  <button type="button" data-to="p-rag"     aria-label="RAG chatbot with web search"><span></span></button>
   <button type="button" data-to="p-review"  aria-label="Fake Review Detector"><span></span></button>
   <button type="button" data-to="p-helivor" aria-label="Helivor"><span></span></button>
   <button type="button" data-to="p-github"  aria-label="GitHub activity"><span></span></button>
@@ -56,15 +57,16 @@
   <section class="panel hero" id="p-hero">
     <div class="glow" aria-hidden="true"><i></i></div>
     <div class="wrap">
-      <p class="status anim" data-d="0"><span class="dot" aria-hidden="true"></span> Available for new work</p>
+      <p class="status anim" data-d="0"><span class="dot" aria-hidden="true"></span> Seeking a backend / AI engineering internship</p>
       <h1 class="anim" data-d="1">
         <span class="line"><span class="split">Pranav</span></span>
         <span class="line"><span class="split">Hirawat</span></span>
       </h1>
       <p class="lede anim" data-d="2">
-        BCA student at PES University. I build backend systems that make decisions
-        on their own — most recently an agentic control plane that turns scattered
-        attack evidence into named campaigns and writes the policy a gateway enforces.
+        Final-year BCA student at PES University. I build backend systems and AI
+        applications in Python — most recently an agentic control plane that turns
+        scattered attack evidence into named campaigns and writes the policy a
+        gateway enforces.
       </p>
       <p class="cta anim" data-d="3">
         <a class="btn" href="#p-gateway">See the work</a>
@@ -78,8 +80,8 @@
   <section class="panel work" id="p-gateway">
     <div class="wrap">
       <div class="stat anim" data-d="0">
-        <b class="tally" data-to="249">249</b>
-        <span>tests against 3,925 lines</span>
+        <b class="tally" data-to="282">282</b>
+        <span>tests against 3,822 lines</span>
       </div>
       <div class="body">
         <p class="idx anim" data-d="1">01 — Selected work</p>
@@ -96,21 +98,55 @@
             to Redis with a TTL, so decisions expire on their own.</p>
           <p class="keyline"><b>The decision I'd defend.</b> The LLM narrates incidents but runs
             strictly <em>after</em> enforcement — a prompt-injected summary can mislead a reader
-            and still never unblock an attacker.</p>
+            and still never unblock an attacker. One test feeds the pipeline ordinary traffic
+            and fails if it reports a single detection.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════ 2 · Review detector ═══════════════ -->
-  <section class="panel work" id="p-review">
+  <!-- ═══════════════ 2 · RAG chatbot ═══════════════ -->
+  <section class="panel work" id="p-rag">
     <div class="wrap">
       <div class="stat anim" data-d="0">
-        <b>~<span class="tally" data-to="89">89</span>%</b>
-        <span>accuracy, read past accuracy</span>
+        <b class="word">Docs&nbsp;+&nbsp;web</b>
+        <span>two sources, one answer</span>
       </div>
       <div class="body">
         <p class="idx anim" data-d="1">02 — Selected work</p>
+        <h2 class="anim" data-d="2">RAG Chatbot with Web Search</h2>
+        <p class="tags anim" data-d="4">
+          <span>Python</span><span>LangChain</span><span>Chroma</span><span>Ollama</span><span>DuckDuckGo</span>
+        </p>
+        <div class="detail anim" data-d="5">
+          <p><b>Problem.</b> A model that only knows its training data can't tell you anything
+            current; one that only searches the web knows nothing about your documents. Most
+            answers need both.</p>
+          <p><b>Built.</b> Documents chunked, embedded and stored in Chroma for semantic search,
+            queried in parallel with a live DuckDuckGo search, then handed to a local Gemma model
+            through Ollama to synthesise one answer. Inference runs on the machine — no API keys,
+            nothing leaves the box.</p>
+          <p class="keyline"><b>What I'd fix first.</b> It answers every question from scratch,
+            with no memory of the last one. That keeps retrieval honest — nothing leaks in from
+            earlier turns — but it rules out follow-ups, and conversation state is the next thing
+            I'd build.</p>
+        </div>
+        <p class="links anim" data-d="6">
+          <a href="https://github.com/Pranav-Hirawat/ollama-chatbot">Code <span class="arw" aria-hidden="true">↗</span></a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ 3 · Review detector ═══════════════ -->
+  <section class="panel work" id="p-review">
+    <div class="wrap">
+      <div class="stat anim" data-d="0">
+        <b class="word">TF&#8209;IDF</b>
+        <span>judged on precision, not accuracy</span>
+      </div>
+      <div class="body">
+        <p class="idx anim" data-d="1">03 — Selected work</p>
         <h2 class="anim" data-d="2">Fake Review Detector</h2>
         <p class="tags anim" data-d="4">
           <span>Python</span><span>NLP</span><span>scikit-learn</span><span>Streamlit</span><span>2026</span>
@@ -118,29 +154,31 @@
         <div class="detail anim" data-d="5">
           <p><b>Problem.</b> Computer-generated reviews read as fluently as real ones, which is
             what makes them hard to spot by eye and easy to buy in bulk.</p>
-          <p><b>Built.</b> A classifier over a cleaned, stopword-stripped, TF-IDF corpus,
-            comparing logistic regression against naive Bayes, deployed as a Streamlit app
-            that scores a pasted review live.</p>
-          <p class="keyline"><b>Outcome.</b> Evaluated on a confusion matrix and precision/recall/F1
-            rather than accuracy alone — on a task where a false accusation costs more than a miss.</p>
+          <p><b>Built.</b> A supervised pipeline over a cleaned, stopword-stripped, TF-IDF
+            corpus — several algorithms compared and their hyperparameters tuned before picking
+            one — deployed as a Streamlit app that scores a pasted review live.</p>
+          <p class="keyline"><b>The decision I'd defend.</b> Judged on a confusion matrix and
+            precision/recall/F1 rather than accuracy, because on this task a false accusation
+            costs a seller far more than a missed fake costs a shopper.</p>
         </div>
         <p class="links anim" data-d="6">
           <a href="https://fake-review-detector-pranav.streamlit.app/">Live demo <span class="arw" aria-hidden="true">↗</span></a>
           <a href="https://github.com/Pranav-Hirawat/Fake-review-detector">Code <span class="arw" aria-hidden="true">↗</span></a>
         </p>
+        <p class="note anim" data-d="7">Free hosting — the demo may take a moment to wake up.</p>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════ 3 · Helivor ═══════════════ -->
+  <!-- ═══════════════ 4 · Helivor ═══════════════ -->
   <section class="panel work" id="p-helivor">
     <div class="wrap">
       <div class="stat anim" data-d="0">
-        <b>On&#8209;device</b>
+        <b class="word">On&#8209;device</b>
         <span>no network round trip</span>
       </div>
       <div class="body">
-        <p class="idx anim" data-d="1">03 — Selected work</p>
+        <p class="idx anim" data-d="1">04 — Selected work</p>
         <h2 class="anim" data-d="2">Helivor</h2>
         <p class="tags anim" data-d="4">
           <span>Swift</span><span>SwiftUI</span><span>On-device AI</span><span>2025</span>
@@ -160,10 +198,10 @@
     </div>
   </section>
 
-  <!-- ═══════════════ 4 · GitHub ═══════════════ -->
+  <!-- ═══════════════ 5 · GitHub ═══════════════ -->
   <section class="panel gh" id="p-github" hidden>
     <div class="wrap">
-      <p class="idx anim" data-d="0">04 — Activity</p>
+      <p class="idx anim" data-d="0">05 — Activity</p>
       <h2 class="anim" data-d="1">GitHub</h2>
       <div class="gh-graph-wrap anim" data-d="2">
         <p class="gh-total" id="gh-total"></p>
@@ -183,10 +221,10 @@
     </div>
   </section>
 
-  <!-- ═══════════════ 5 · About ═══════════════ -->
+  <!-- ═══════════════ 6 · About ═══════════════ -->
   <section class="panel about" id="p-about">
     <div class="wrap">
-      <p class="idx anim" data-d="0">05 — About</p>
+      <p class="idx anim" data-d="0">06 — About</p>
       <div class="prose">
         <p class="anim" data-d="1">I'm drawn to the part of a system that has to decide something
           under uncertainty — where the interesting question isn't whether the code runs but
@@ -194,18 +232,33 @@
         <p class="anim" data-d="2">That's most of what the gateway project became. Blocking a bad IP
           is easy; recognising that six addresses are one attacker, choosing an action
           proportionate to how sure you are, and making sure a language model can narrate the
-          incident without ever being able to influence it — that's the actual work. I've since
-          been pulling the same thread through smaller things: classifiers where a false
-          accusation costs more than a miss, and an iOS app that has to stay useful when the
-          network doesn't.</p>
+          incident without ever being able to influence it — that's the actual work. The same
+          thread runs through the smaller projects: a chatbot that has to say where an answer
+          came from, a classifier where a false accusation costs more than a miss, and an iOS
+          app that has to stay useful when the network doesn't.</p>
       </div>
+
+      <dl class="facts anim" data-d="3">
+        <div>
+          <dt>Education</dt>
+          <dd>PES University, Bengaluru — BCA<br><span>Expected May 2027 · CGPA 7.66 / 10</span></dd>
+        </div>
+        <div>
+          <dt>Stack</dt>
+          <dd>Python, SQL, Redis, PostgreSQL, REST<br><span>LangChain, Ollama, scikit-learn, pytest</span></dd>
+        </div>
+        <div>
+          <dt>Beyond the code</dt>
+          <dd>Technical Core Team, TAMS<br><span>Logistics, Chords music festival</span></dd>
+        </div>
+      </dl>
     </div>
   </section>
 
-  <!-- ═══════════════ 6 · Contact ═══════════════ -->
+  <!-- ═══════════════ 7 · Contact ═══════════════ -->
   <section class="panel contact" id="p-contact">
     <div class="wrap">
-      <p class="idx anim" data-d="0">06 — Contact</p>
+      <p class="idx anim" data-d="0">07 — Contact</p>
       <h2 class="anim" data-d="1">Let's talk.</h2>
       <p class="lede anim" data-d="2">Best way to reach me is email. I read everything.</p>
       <ul class="links-list anim" data-d="3">
@@ -225,7 +278,7 @@
 </main>
 
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
-<script src="js/github.js?v=9" defer></script>
-<script src="js/motion.js?v=9" defer></script>
+<script src="js/github.js?v=10" defer></script>
+<script src="js/motion.js?v=10" defer></script>
 </body>
 </html>
